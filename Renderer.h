@@ -8,9 +8,11 @@
 class Renderer {
 public:
 	Renderer();
-	void DrawCell(Piece* i_cell, int i_pixelX, int i_pixelY);
+	void DrawCell(CellType i_cellType, Color i_color, int i_pixelX, int i_pixelY);
 	void DrawBoadData();
 	void DrawTable();
+	void DrawSelectionPromotionPawn(int i_DrawX, int i_DrawY, Color i_color);
+	void DrawPromotionPawn(int i_PawnX, int i_PawnY);
 	void DrawAvailableMove(int i_CurrentPiece_X, int i_CurrentPiece_Y, std::vector<Coordinate> i_availableMove);
 	void PostFrame();
 	void CleanUp();

@@ -18,6 +18,7 @@ public:
 	void Reset();
 	Piece*** getBoardData();
 	GameResult getGameResult();
+	void PromotionPawn(int i_PawnX, int i_PawnY, int i_mouseX, int i_mouseY);
 	void Move(Piece* i_CurrentPiece, int i_CurrentPieceX, int i_CurrentPieceY, int i_MoveX, int i_MoveY);
 	void UpdateGameResult(Piece* i_CurrentPiece, CellType i_recentKillPiece, int i_MoveX, int i_MoveY);
 	~Board();

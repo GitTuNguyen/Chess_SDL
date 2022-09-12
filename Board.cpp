@@ -150,6 +150,54 @@ void Board::Move(Piece* i_CurrentPiece, int i_CurrentPieceX, int i_CurrentPieceY
 	UpdateGameResult(i_CurrentPiece, recentKillPiece, i_MoveX, i_MoveY);
 }
 
+void Board::PromotionPawn(int i_PawnX, int i_PawnY, int i_mouseX,int  i_mouseY)
+{
+	if (i_PawnX == 0)
+	{
+		if ((i_PawnY == 0 && i_mouseY == i_PawnY + 1) || (i_PawnY > 0 && i_mouseY == i_PawnY - 1) )
+		{
+			if (i_mouseX == 0)
+			{
+				m_boardData[i_PawnX][i_PawnY] = AddPiece(CellType::QUEEN, Color::WHITE);
+			}
+			else if (i_mouseX == 1)
+			{
+				m_boardData[i_PawnX][i_PawnY] = AddPiece(CellType::KNIGHT, Color::WHITE);
+			}
+			else if (i_mouseX == 2)
+			{
+				m_boardData[i_PawnX][i_PawnY] = AddPiece(CellType::CASTLE, Color::WHITE);
+			}
+			else if (i_mouseX == 3)
+			{
+				m_boardData[i_PawnX][i_PawnY] = AddPiece(CellType::BISHOP, Color::WHITE);
+			}
+		}
+	}
+	else if (i_PawnX == BOARD_HEIGHT - 1)
+	{
+		if ((i_PawnY == 0 && i_mouseY == i_PawnY + 1) || (i_PawnY > 0 && i_mouseY == i_PawnY - 1))
+		{
+			if (i_mouseX == BOARD_HEIGHT - 4)
+			{
+				m_boardData[i_PawnX][i_PawnY] = AddPiece(CellType::QUEEN, Color::BLACK);
+			}
+			else if (i_mouseX == BOARD_HEIGHT - 3)
+			{
+				m_boardData[i_PawnX][i_PawnY] = AddPiece(CellType::KNIGHT, Color::BLACK);
+			}
+			else if (i_mouseX == BOARD_HEIGHT - 2)
+			{
+				m_boardData[i_PawnX][i_PawnY] = AddPiece(CellType::CASTLE, Color::BLACK);
+			}
+			else if (i_mouseX == BOARD_HEIGHT - 1)
+			{
+				m_boardData[i_PawnX][i_PawnY] = AddPiece(CellType::BISHOP, Color::BLACK);
+			}
+		}
+	}
+}
+
 Board::~Board()
 {
 	for (int i = 0; i < BOARD_HEIGHT; i++)

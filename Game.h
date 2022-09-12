@@ -16,6 +16,8 @@ private:
 	void UpdateMove(int i_MoveX, int i_MoveY);
 	void Rematch();
 	void setCurrentPiece(int i_X, int i_Y);
+	bool CheckPawnPromotion(Piece*** i_boardData);
+	Coordinate PawnPromotionCoordinate;
 	std::vector<Coordinate> CurrentAvailableMove();
 	Board* m_board;
 	Renderer* m_renderer;

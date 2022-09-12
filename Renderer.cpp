@@ -10,7 +10,7 @@ Renderer::Renderer()
 	}
 
 	//Create window
-	m_window = SDL_CreateWindow("Tic And Toe - SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
+	m_window = SDL_CreateWindow("Chess - SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
 	if (m_window == NULL)
 	{
 		printf("Could not create window %s", SDL_GetError());
@@ -75,7 +75,7 @@ void Renderer::PreRendering()
 	DrawTable();
 }
 
-void Renderer::DrawCell(Piece* i_cell, int i_pixelX, int i_pixelY)
+void Renderer::DrawCell(CellType i_cellType, Color i_color, int i_pixelX, int i_pixelY)
 {
 	SDL_Rect newRect;
 	newRect.w = SIZE_CELL_PIXEL;
@@ -83,9 +83,9 @@ void Renderer::DrawCell(Piece* i_cell, int i_pixelX, int i_pixelY)
 	newRect.x = i_pixelX + SIZE_EDGE;
 	newRect.y = i_pixelY + SIZE_EDGE;
 
-	if (i_cell->getName() == CellType::KING)
+	if (i_cellType == CellType::KING)
 	{
-		if (i_cell->getColor() == Color::BLACK)
+		if ( i_color == Color::BLACK)
 		{
 			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["KingB"], NULL, &newRect);
 		}
@@ -93,9 +93,9 @@ void Renderer::DrawCell(Piece* i_cell, int i_pixelX, int i_pixelY)
 			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["KingW"], NULL, &newRect);
 		}
 	} 
-	else if (i_cell->getName() == CellType::QUEEN)
+	else if (i_cellType == CellType::QUEEN)
 	{
-		if (i_cell->getColor() == Color::BLACK)
+		if (i_color == Color::BLACK)
 		{
 			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["QueenB"], NULL, &newRect);
 		}
@@ -104,9 +104,9 @@ void Renderer::DrawCell(Piece* i_cell, int i_pixelX, int i_pixelY)
 		}
 
 		}
-	else if (i_cell->getName() == CellType::BISHOP)
+	else if (i_cellType == CellType::BISHOP)
 	{
-		if (i_cell->getColor() == Color::BLACK)
+		if (i_color == Color::BLACK)
 		{
 			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["BishopB"], NULL, &newRect);
 		}
@@ -114,9 +114,9 @@ void Renderer::DrawCell(Piece* i_cell, int i_pixelX, int i_pixelY)
 			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["BishopW"], NULL, &newRect);
 		}
 	}
-	else if (i_cell->getName() == CellType::KNIGHT)
+	else if (i_cellType == CellType::KNIGHT)
 	{
-		if (i_cell->getColor() == Color::BLACK)
+		if (i_color == Color::BLACK)
 		{
 			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["KnightB"], NULL, &newRect);
 		}
@@ -124,9 +124,9 @@ void Renderer::DrawCell(Piece* i_cell, int i_pixelX, int i_pixelY)
 			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["KnightW"], NULL, &newRect);
 		}
 	}
-	else if (i_cell->getName() == CellType::CASTLE)
+	else if (i_cellType == CellType::CASTLE)
 	{
-		if (i_cell->getColor() == Color::BLACK)
+		if (i_color == Color::BLACK)
 		{
 			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["CastleB"], NULL, &newRect);
 		}
@@ -134,9 +134,9 @@ void Renderer::DrawCell(Piece* i_cell, int i_pixelX, int i_pixelY)
 			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["CastleW"], NULL, &newRect);
 		}
 	}
-	else if (i_cell->getName() == CellType::PAWN)
+	else if (i_cellType == CellType::PAWN)
 	{
-		if (i_cell->getColor() == Color::BLACK)
+		if (i_color == Color::BLACK)
 		{
 			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["PawnB"], NULL, &newRect);
 		}
@@ -144,6 +144,58 @@ void Renderer::DrawCell(Piece* i_cell, int i_pixelX, int i_pixelY)
 			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["PawnW"], NULL, &newRect);
 		}
 	}
+}
+
+void Renderer::DrawSelectionPromotionPawn(int i_DrawX, int i_DrawY, Color i_color)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		if (i == 0)
+		{
+			DrawCell(CellType::QUEEN, i_color, i_DrawX - SIZE_EDGE, i_DrawY - SIZE_EDGE);			
+		}
+		else if (i == 1)
+		{
+			DrawCell(CellType::KNIGHT, i_color, i_DrawX - SIZE_EDGE, i_DrawY - SIZE_EDGE + SIZE_CELL_PIXEL);
+		}
+		else if (i == 2)
+		{
+			DrawCell(CellType::CASTLE, i_color, i_DrawX - SIZE_EDGE, i_DrawY - SIZE_EDGE + (2 * SIZE_CELL_PIXEL) );
+		}
+		else if (i == 3)
+		{
+			DrawCell(CellType::BISHOP, i_color, i_DrawX - SIZE_EDGE, i_DrawY - SIZE_EDGE + (3 * SIZE_CELL_PIXEL));
+		}
+	}
+}
+
+void Renderer::DrawPromotionPawn(int i_PawnX, int i_PawnY)
+{
+	Color tempColor;
+	SDL_Rect newRect;
+	newRect.h = SIZE_CELL_PIXEL * 4;
+	newRect.w = SIZE_CELL_PIXEL;
+	if (i_PawnX == 0)
+	{
+		newRect.y = SIZE_EDGE;
+		tempColor = Color::WHITE;
+	}
+	else {
+		newRect.y = (BOARD_HEIGHT - 4) * SIZE_CELL_PIXEL + SIZE_EDGE;
+		tempColor = Color::BLACK;
+	}
+	if (i_PawnY == 0)
+	{
+		newRect.x = (i_PawnY + 1) * SIZE_CELL_PIXEL + SIZE_EDGE;
+	}
+	else {
+		newRect.x = (i_PawnY - 1) * SIZE_CELL_PIXEL + SIZE_EDGE;
+	}
+
+	SDL_SetRenderDrawColor(m_sdlRenderer, 255, 255, 255, 255);
+	SDL_RenderFillRect(m_sdlRenderer, &newRect);
+
+	DrawSelectionPromotionPawn(newRect.x, newRect.y, tempColor);
 }
 
 void Renderer::DrawAvailableMove(int i_CurrentPiece_X, int i_CurrentPiece_Y, std::vector<Coordinate> i_availableMove)

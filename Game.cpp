@@ -53,7 +53,7 @@ void Game::DrawBoard()
 				continue;
 			} else
 			{
-				m_renderer->DrawCell(boardData[i][j], j * SIZE_CELL_PIXEL, i * SIZE_CELL_PIXEL);
+				m_renderer->DrawCell(boardData[i][j]->getName(), boardData[i][j]->getColor(), j * SIZE_CELL_PIXEL, i * SIZE_CELL_PIXEL);
 			}
 		}
 	}
@@ -93,6 +93,23 @@ void Game::UpdateMove(int i_MoveX, int i_MoveY)
 	m_currentPlayer = m_currentPlayer == Color::WHITE ? Color::BLACK : Color::WHITE;
 }
 
+bool Game::CheckPawnPromotion(Piece*** i_boardData)
+{
+	for (int i = 0; i < BOARD_HEIGHT; i++)
+	{
+		for (int j = 0; j < BOARD_WIDTH; j++)
+		{
+			if (i_boardData[i][j] != nullptr && (i == 0 || i == BOARD_HEIGHT - 1) && i_boardData[i][j]->getName() == CellType::PAWN)
+			{
+				PawnPromotionCoordinate.x = i;
+				PawnPromotionCoordinate.y = j;
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 void Game::Update()
 {
 	m_renderer->PreRendering();
@@ -111,29 +128,60 @@ void Game::Update()
 					m_isPlayerWantExit = true;
 					break;
 				}
-				case SDL_MOUSEBUTTONDOWN:
-				{
-					Piece*** boardData = m_board->getBoardData();
-					int mouse_X = mainEvent.motion.x;
-					int mouse_Y = mainEvent.motion.y;
-					if (boardData[(mouse_Y - SIZE_EDGE) / SIZE_CELL_PIXEL][(mouse_X - SIZE_EDGE) / SIZE_CELL_PIXEL] != nullptr && boardData[(mouse_Y - SIZE_EDGE) / SIZE_CELL_PIXEL][(mouse_X - SIZE_EDGE) / SIZE_CELL_PIXEL]->getColor() == m_currentPlayer)
-					{
-						setCurrentPiece((mouse_Y - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouse_X - SIZE_EDGE) / SIZE_CELL_PIXEL);
-						m_renderer->PreRendering();
-						m_renderer->DrawAvailableMove(m_currentPieceCoordinate.x, m_currentPieceCoordinate.y, CurrentAvailableMove());
-						DrawBoard();
-					}
-					else if (m_currentPiece != nullptr &&  CheckValidMove((mouse_Y - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouse_X - SIZE_EDGE) / SIZE_CELL_PIXEL))
-					{
-						UpdateMove((mouse_Y - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouse_X - SIZE_EDGE) / SIZE_CELL_PIXEL);
-						m_renderer->PreRendering();
-						DrawBoard();
-					}
-				}
 				default:
 				{
 					break;
 				}
+				}
+				Piece*** boardData = m_board->getBoardData();
+				if (!CheckPawnPromotion(boardData))
+				{
+					switch (mainEvent.type)
+					{
+					case SDL_MOUSEBUTTONDOWN:
+					{
+						int mouse_X = mainEvent.motion.x;
+						int mouse_Y = mainEvent.motion.y;
+						if (boardData[(mouse_Y - SIZE_EDGE) / SIZE_CELL_PIXEL][(mouse_X - SIZE_EDGE) / SIZE_CELL_PIXEL] != nullptr && boardData[(mouse_Y - SIZE_EDGE) / SIZE_CELL_PIXEL][(mouse_X - SIZE_EDGE) / SIZE_CELL_PIXEL]->getColor() == m_currentPlayer)
+						{
+							setCurrentPiece((mouse_Y - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouse_X - SIZE_EDGE) / SIZE_CELL_PIXEL);
+							m_renderer->PreRendering();
+							m_renderer->DrawAvailableMove(m_currentPieceCoordinate.x, m_currentPieceCoordinate.y, CurrentAvailableMove());
+							DrawBoard();
+						}
+						else if (m_currentPiece != nullptr && CheckValidMove((mouse_Y - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouse_X - SIZE_EDGE) / SIZE_CELL_PIXEL))
+						{
+							UpdateMove((mouse_Y - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouse_X - SIZE_EDGE) / SIZE_CELL_PIXEL);
+							m_renderer->PreRendering();
+							DrawBoard();
+						}
+					}
+					default:
+					{
+						break;
+					}
+					}
+					
+				}
+				else {
+					m_renderer->PreRendering();
+					DrawBoard();
+					m_renderer->DrawPromotionPawn(PawnPromotionCoordinate.x, PawnPromotionCoordinate.y);
+					switch (mainEvent.type)
+					{
+					case SDL_MOUSEBUTTONDOWN:
+					{
+						int mouse_X = mainEvent.motion.x;
+						int mouse_Y = mainEvent.motion.y;
+						m_board->PromotionPawn(PawnPromotionCoordinate.x, PawnPromotionCoordinate.y, (mouse_Y - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouse_X - SIZE_EDGE) / SIZE_CELL_PIXEL);
+						m_renderer->PreRendering();
+						DrawBoard();
+					}
+					default:
+					{
+						break;
+					}
+					}
 				}
 			}
 		}
