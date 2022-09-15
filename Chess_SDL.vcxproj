@@ -18,6 +18,32 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Bishop.h" />
+    <ClInclude Include="Source\Board.h" />
+    <ClInclude Include="Source\Castle.h" />
+    <ClInclude Include="Source\ConstValue.h" />
+    <ClInclude Include="Source\Game.h" />
+    <ClInclude Include="Source\King.h" />
+    <ClInclude Include="Source\Knight.h" />
+    <ClInclude Include="Source\Pawn.h" />
+    <ClInclude Include="Source\Piece.h" />
+    <ClInclude Include="Source\Queen.h" />
+    <ClInclude Include="Source\Renderer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Bishop.cpp" />
+    <ClCompile Include="Source\Board.cpp" />
+    <ClCompile Include="Source\Castle.cpp" />
+    <ClCompile Include="Source\Chess.cpp" />
+    <ClCompile Include="Source\Game.cpp" />
+    <ClCompile Include="Source\King.cpp" />
+    <ClCompile Include="Source\Knight.cpp" />
+    <ClCompile Include="Source\Pawn.cpp" />
+    <ClCompile Include="Source\Piece.cpp" />
+    <ClCompile Include="Source\Queen.cpp" />
+    <ClCompile Include="Source\Renderer.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -144,32 +170,6 @@
       <AdditionalDependencies>./Lib/SDL/SDL2main.lib;./Lib/SDL/SDL2.lib;./Lib/SDL_IMAGE/lib/SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="Bishop.h" />
-    <ClInclude Include="Board.h" />
-    <ClInclude Include="Castle.h" />
-    <ClInclude Include="ConstValue.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="King.h" />
-    <ClInclude Include="Knight.h" />
-    <ClInclude Include="Pawn.h" />
-    <ClInclude Include="Piece.h" />
-    <ClInclude Include="Queen.h" />
-    <ClInclude Include="Renderer.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Bishop.cpp" />
-    <ClCompile Include="Board.cpp" />
-    <ClCompile Include="Castle.cpp" />
-    <ClCompile Include="Chess.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Knight.cpp" />
-    <ClCompile Include="Pawn.cpp" />
-    <ClCompile Include="Piece.cpp" />
-    <ClCompile Include="King.cpp" />
-    <ClCompile Include="Queen.cpp" />
-    <ClCompile Include="Renderer.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
