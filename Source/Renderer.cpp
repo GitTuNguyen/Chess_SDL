@@ -31,13 +31,10 @@ Renderer::Renderer()
 
 void Renderer::CleanUp()
 {
+	SDL_DestroyRenderer(m_sdlRenderer);	//cleans up all initialized subsystems
 
-	SDL_DestroyWindow(m_window);
-
-	//Destroy a renderer
-	SDL_DestroyRenderer(m_sdlRenderer);
-
-	//cleans up all initialized subsystems
+	SDL_DestroyWindow(m_window);	//Destroy a renderer
+	
 	SDL_Quit();
 }
 
