@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include <iostream>
 #include "ConstValue.h"
+
 class Game {
 public:
 	Game();
@@ -11,10 +12,11 @@ public:
 private:
 	void LoadPicture();
 	void DrawBoard();
+	void DrawGameOverScreen();
 	void CreateNewGame();
 	bool CheckValidMove(int i_X, int i_Y);
 	void UpdateMove(int i_MoveX, int i_MoveY);
-	void Rematch();
+	void Rematch(int i_mouse_X, int i_mouse_Y);
 	void setCurrentPiece(int i_X, int i_Y);
 	bool CheckPawnPromotion(Piece*** i_boardData);
 	Coordinate PawnPromotionCoordinate;

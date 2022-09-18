@@ -20,23 +20,21 @@ void Game::CreateNewGame()
 
 void Game::LoadPicture()
 {
-	std::string file_name[AMOUNT_OF_FILE_PICTURE] = { "KingB", "KingW", "QueenB", "QueenW", "BishopB", "BishopW", "KnightB", "KnightW", "CastleB", "CastleW", "PawnB", "PawnW", "CasaVerde", "CasaVerde_", "B_win", "W_win", "Chess_Stone"};
-	for (int i = 0; i < sizeof(file_name) / sizeof(std::string); i++)
+	std::vector<std::string> gameTextures = { "KingB", "KingW", "QueenB", "QueenW", "BishopB", "BishopW", "KnightB", "KnightW", "CastleB", "CastleW", "PawnB", "PawnW", "CasaVerde", "CasaVerde_", "B_win", "W_win", "Chess_Stone", "YES", "NO"};
+	for (int i = 0; i < gameTextures.size(); i++)
 	{
-		m_renderer->LoadTexture(file_name[i]);
+		m_renderer->LoadTexture(gameTextures[i]);
 	}
 }
 
-void Game::Rematch()
+void Game::Rematch(int i_mouse_X, int i_mouse_Y)
 {
-	char inputPlayer;
-	std::cout << "Play again? (Y to play again, another key to quit): ";
-	std::cin >> inputPlayer;
-	if (inputPlayer == 'Y' || inputPlayer == 'y')
+
+	if (i_mouse_X >= YES_CELL_X && i_mouse_X <= YES_CELL_X + YES_CELL_WIDTH && i_mouse_Y >= YES_CELL_Y && i_mouse_Y <= YES_CELL_Y + YES_CELL_HEIGHT)
 	{
 		CreateNewGame();
 	}
-	else {
+	else if (i_mouse_X >= NO_CELL_X && i_mouse_X <= NO_CELL_X + NO_CELL_WIDTH && i_mouse_Y >= NO_CELL_Y && i_mouse_Y <= NO_CELL_Y + NO_CELL_HEIGHT) {
 		m_isPlayerWantExit = true;
 	}
 }
@@ -108,6 +106,24 @@ bool Game::CheckPawnPromotion(Piece*** i_boardData)
 		}
 	}
 	return false;
+}
+
+void Game::DrawGameOverScreen()
+{
+	m_renderer->DrawGameOverPopup();
+	std::string game_result;
+	switch (m_board->getGameResult())
+	{
+	case White_Player_WIN:
+		game_result = "White Player WIN";
+		break;
+	case Black_Player_WIN:
+		game_result = "Black Player WIN";
+		break;
+	default:
+		break;
+	}
+	m_renderer->DrawText(game_result, TEXT_GAME_RESULT_SIZE, TEXT_GAME_RESULT_X, TEXT_GAME_RESULT_Y, TEXT_GAME_RESULT_HEIGHT, TEXT_GAME_RESULT_WIDTH);
 }
 
 void Game::Update()
@@ -186,12 +202,35 @@ void Game::Update()
 			}
 		}
 		else {
-			Rematch();
+			DrawGameOverScreen();
+			SDL_Rect newRect;
+			while (SDL_PollEvent(&mainEvent))
+			{
+				switch (mainEvent.type)
+				{
+				case SDL_QUIT:
+				{
+					m_isPlayerWantExit = true;
+					break;
+				}
+				case SDL_MOUSEBUTTONDOWN:
+				{
+					newRect.x = mainEvent.motion.x;
+					newRect.y = mainEvent.motion.y;
+					Rematch(newRect.x, newRect.y);
+				}
+				default:
+				{
+					break;
+				}
+				}
+			}
 		}
 		m_renderer->PostFrame();
 	}
 	m_renderer->CleanUp();
 }
+
 Game::~Game()
 {
 	delete m_board;
