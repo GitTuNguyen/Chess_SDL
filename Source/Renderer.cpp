@@ -16,7 +16,7 @@ Renderer::Renderer()
 	}
 
 	//Create window
-	m_window = SDL_CreateWindow("Chess - SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
+	m_window = SDL_CreateWindow("Chess - SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_FULLSCREEN_DESKTOP);
 	if (m_window == NULL)
 	{
 		printf("Could not create window %s", SDL_GetError());
@@ -32,6 +32,9 @@ Renderer::Renderer()
 		printf("Could not create render %s", SDL_GetError());
 		return;
 	}
+
+	SDL_RenderSetLogicalSize(m_sdlRenderer, WINDOW_WIDTH, WINDOW_HEIGHT);
+
 	LoadTexture("Chess_Stone");
 
 	if (TTF_Init() < 0)
