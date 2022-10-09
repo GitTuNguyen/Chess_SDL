@@ -22,8 +22,9 @@
     <ClInclude Include="Source\Bishop.h" />
     <ClInclude Include="Source\Board.h" />
     <ClInclude Include="Source\Castle.h" />
-    <ClInclude Include="Source\ConstValue.h" />
+    <ClInclude Include="Source\GameDefinition.h" />
     <ClInclude Include="Source\Game.h" />
+    <ClInclude Include="Source\InputManager.h" />
     <ClInclude Include="Source\King.h" />
     <ClInclude Include="Source\Knight.h" />
     <ClInclude Include="Source\Pawn.h" />
@@ -37,6 +38,7 @@
     <ClCompile Include="Source\Castle.cpp" />
     <ClCompile Include="Source\Chess.cpp" />
     <ClCompile Include="Source\Game.cpp" />
+    <ClCompile Include="Source\InputManager.cpp" />
     <ClCompile Include="Source\King.cpp" />
     <ClCompile Include="Source\Knight.cpp" />
     <ClCompile Include="Source\Pawn.cpp" />

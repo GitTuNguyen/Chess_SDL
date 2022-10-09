@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "ConstValue.h"
+#include "GameDefinition.h"
 
 class Piece {
 public:

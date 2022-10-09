@@ -33,6 +33,7 @@ Renderer::Renderer()
 		return;
 	}
 
+	//Render in center of window
 	SDL_RenderSetLogicalSize(m_sdlRenderer, WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	LoadTexture("Chess_Stone");
@@ -64,7 +65,7 @@ void Renderer::LoadTexture(std::string i_ImageName)
 	IMG_Init(IMG_INIT_PNG);
 	SDL_Surface* tempSurface = NULL;
 	SDL_Texture* texture = NULL;
-	std::string str = "./Data/" + i_ImageName + ".png";
+	std::string str = "Data/" + i_ImageName + ".png";
 	tempSurface = IMG_Load(str.c_str());
 	texture = SDL_CreateTextureFromSurface(m_sdlRenderer, tempSurface);
 	SDL_FreeSurface(tempSurface);
@@ -231,7 +232,7 @@ void Renderer::DrawAvailableMove(int i_CurrentPiece_X, int i_CurrentPiece_Y, std
 
 void Renderer::DrawText(std::string i_text, int i_size, int i_X, int i_Y, int i_H, int i_W)
 {
-	TTF_Font* font = TTF_OpenFont("./Data/font.ttf", i_size);
+	TTF_Font* font = TTF_OpenFont("Data/font.ttf", i_size);
 	SDL_Color White = { 255, 255, 255 };
 	const char* renderText = i_text.c_str();
 	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, renderText, White);
@@ -258,19 +259,19 @@ void Renderer::DrawGameOverPopup()
 
 	SDL_RenderFillRect(m_sdlRenderer, &newRect);
 
-	DrawText("GAME OVER", TEXT_GAME_OVER_SIZE, TEXT_GAME_OVER_X, TEXT_GAME_OVER_Y, TEXT_GAME_OVER_HEIGHT, TEXT_GAME_OVER_WIDTH);
+	DrawText("GAME OVER", TEXT_SIZE, TEXT_GAME_OVER_X, TEXT_GAME_OVER_Y, TEXT_GAME_OVER_HEIGHT, TEXT_GAME_OVER_WIDTH);
 
-	DrawText("PLAY AGAIN?", TEXT_PLAY_AGAIN_SIZE, TEXT_PLAY_AGAIN_X, TEXT_PLAY_AGAIN_Y, TEXT_PLAY_AGAIN_HEIGHT, TEXT_PLAY_AGAIN_WIDTH);
+	DrawText("PLAY AGAIN?", TEXT_SIZE, TEXT_PLAY_AGAIN_X, TEXT_PLAY_AGAIN_Y, TEXT_PLAY_AGAIN_HEIGHT, TEXT_PLAY_AGAIN_WIDTH);
 
-	newRect.w = YES_CELL_WIDTH;
-	newRect.h = YES_CELL_HEIGHT;
-	newRect.x = YES_CELL_X;
-	newRect.y = YES_CELL_Y;
+	newRect.w = YES_BUTTON_WIDTH;
+	newRect.h = YES_BUTTON_HEIGHT;
+	newRect.x = YES_BUTTONL_X;
+	newRect.y = YES_BUTTON_Y;
 	SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["YES"], NULL, &newRect);
 
-	newRect.w = NO_CELL_WIDTH;
-	newRect.h = NO_CELL_HEIGHT;
-	newRect.x = NO_CELL_X;
-	newRect.y = NO_CELL_Y;
+	newRect.w = NO_BUTTON_WIDTH;
+	newRect.h = NO_BUTTON_HEIGHT;
+	newRect.x = NO_BUTTON_X;
+	newRect.y = NO_BUTTON_Y;
 	SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["NO"], NULL, &newRect);
 }

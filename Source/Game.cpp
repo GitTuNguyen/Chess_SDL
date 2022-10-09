@@ -4,6 +4,7 @@ Game::Game()
 {
 	m_board = new Board();
 	m_renderer = new Renderer();
+	m_inputManager = new InputManager();
 	m_currentPlayer = Color::WHITE;
 	m_isPlayerWantExit = false;
 	m_currentPiece = nullptr;
@@ -24,18 +25,6 @@ void Game::LoadPicture()
 	for (int i = 0; i < gameTextures.size(); i++)
 	{
 		m_renderer->LoadTexture(gameTextures[i]);
-	}
-}
-
-void Game::Rematch(int i_mouse_X, int i_mouse_Y)
-{
-
-	if (i_mouse_X >= YES_CELL_X && i_mouse_X <= YES_CELL_X + YES_CELL_WIDTH && i_mouse_Y >= YES_CELL_Y && i_mouse_Y <= YES_CELL_Y + YES_CELL_HEIGHT)
-	{
-		CreateNewGame();
-	}
-	else if (i_mouse_X >= NO_CELL_X && i_mouse_X <= NO_CELL_X + NO_CELL_WIDTH && i_mouse_Y >= NO_CELL_Y && i_mouse_Y <= NO_CELL_Y + NO_CELL_HEIGHT) {
-		m_isPlayerWantExit = true;
 	}
 }
 
@@ -123,108 +112,80 @@ void Game::DrawGameOverScreen()
 	default:
 		break;
 	}
-	m_renderer->DrawText(game_result, TEXT_GAME_RESULT_SIZE, TEXT_GAME_RESULT_X, TEXT_GAME_RESULT_Y, TEXT_GAME_RESULT_HEIGHT, TEXT_GAME_RESULT_WIDTH);
+	m_renderer->DrawText(game_result, TEXT_SIZE, TEXT_GAME_RESULT_X, TEXT_GAME_RESULT_Y, TEXT_GAME_RESULT_HEIGHT, TEXT_GAME_RESULT_WIDTH);
 }
 
 void Game::Update()
 {
 	m_renderer->PreRendering();
 	DrawBoard();
+	bool wasRenderPromotionPawn = false;
 	while (!m_isPlayerWantExit)
 	{
+		m_inputManager->UpdateInput();
+		m_isPlayerWantExit = m_inputManager->IsGoingToQuit();
 		GameResult gameResult = m_board->getGameResult();
 		if (gameResult == GameResult::RUNNING)
 		{
-			while (SDL_PollEvent(&mainEvent))
+			Piece*** boardData = m_board->getBoardData();
+			if (!CheckPawnPromotion(boardData))
 			{
-				switch (mainEvent.type)
+				if (m_inputManager->IsMouseUp())
 				{
-				case SDL_QUIT:
-				{
-					m_isPlayerWantExit = true;
-					break;
-				}
-				default:
-				{
-					break;
-				}
-				}
-				Piece*** boardData = m_board->getBoardData();
-				if (!CheckPawnPromotion(boardData))
-				{
-					switch (mainEvent.type)
+					int mouseX = m_inputManager->GetMouseX();
+					int mouseY = m_inputManager->GetMouseY();
+					if (boardData[(mouseY - SIZE_EDGE) / SIZE_CELL_PIXEL][(mouseX - SIZE_EDGE) / SIZE_CELL_PIXEL] != nullptr && boardData[(mouseY - SIZE_EDGE) / SIZE_CELL_PIXEL][(mouseX - SIZE_EDGE) / SIZE_CELL_PIXEL]->getColor() == m_currentPlayer)
 					{
-					case SDL_MOUSEBUTTONDOWN:
-					{
-						int mouse_X = mainEvent.motion.x;
-						int mouse_Y = mainEvent.motion.y;
-						if (boardData[(mouse_Y - SIZE_EDGE) / SIZE_CELL_PIXEL][(mouse_X - SIZE_EDGE) / SIZE_CELL_PIXEL] != nullptr && boardData[(mouse_Y - SIZE_EDGE) / SIZE_CELL_PIXEL][(mouse_X - SIZE_EDGE) / SIZE_CELL_PIXEL]->getColor() == m_currentPlayer)
-						{
-							setCurrentPiece((mouse_Y - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouse_X - SIZE_EDGE) / SIZE_CELL_PIXEL);
-							m_renderer->PreRendering();
-							m_renderer->DrawAvailableMove(m_currentPieceCoordinate.x, m_currentPieceCoordinate.y, CurrentAvailableMove());
-							DrawBoard();
-						}
-						else if (m_currentPiece != nullptr && CheckValidMove((mouse_Y - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouse_X - SIZE_EDGE) / SIZE_CELL_PIXEL))
-						{
-							UpdateMove((mouse_Y - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouse_X - SIZE_EDGE) / SIZE_CELL_PIXEL);
-							m_renderer->PreRendering();
-							DrawBoard();
-						}
+						setCurrentPiece((mouseY - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouseX - SIZE_EDGE) / SIZE_CELL_PIXEL);
+						m_renderer->PreRendering();
+						m_renderer->DrawAvailableMove(m_currentPieceCoordinate.x, m_currentPieceCoordinate.y, CurrentAvailableMove());
+						DrawBoard();
 					}
-					default:
+					else if (m_currentPiece != nullptr && CheckValidMove((mouseY - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouseX - SIZE_EDGE) / SIZE_CELL_PIXEL))
 					{
-						break;
-					}
-					}
-					
-				}
-				else {
-					m_renderer->PreRendering();
-					DrawBoard();
-					m_renderer->DrawPromotionPawn(PawnPromotionCoordinate.x, PawnPromotionCoordinate.y);
-					switch (mainEvent.type)
-					{
-					case SDL_MOUSEBUTTONDOWN:
-					{
-						int mouse_X = mainEvent.motion.x;
-						int mouse_Y = mainEvent.motion.y;
-						m_board->PromotionPawn(PawnPromotionCoordinate.x, PawnPromotionCoordinate.y, (mouse_Y - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouse_X - SIZE_EDGE) / SIZE_CELL_PIXEL);
+						UpdateMove((mouseY - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouseX - SIZE_EDGE) / SIZE_CELL_PIXEL);
 						m_renderer->PreRendering();
 						DrawBoard();
 					}
-					default:
-					{
-						break;
-					}
-					}
+				}
+			}
+			else {
+				if (!wasRenderPromotionPawn)
+				{
+					m_renderer->PreRendering();
+					DrawBoard();
+					m_renderer->DrawPromotionPawn(PawnPromotionCoordinate.x, PawnPromotionCoordinate.y);
+					wasRenderPromotionPawn = true;
+				}
+				
+				if (m_inputManager->IsMouseUp())
+				{
+					int mouseX = m_inputManager->GetMouseX();
+					int mouseY = m_inputManager->GetMouseY();
+					m_board->PromotionPawn(PawnPromotionCoordinate.x, PawnPromotionCoordinate.y, (mouseY - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouseX - SIZE_EDGE) / SIZE_CELL_PIXEL);
+					m_renderer->PreRendering();
+					DrawBoard();
+					wasRenderPromotionPawn = false;
 				}
 			}
 		}
 		else {
 			DrawGameOverScreen();
-			SDL_Rect newRect;
-			while (SDL_PollEvent(&mainEvent))
+
+			if (m_inputManager->IsMouseUp())
 			{
-				switch (mainEvent.type)
+				int mouseX = m_inputManager->GetMouseX();
+				int mouseY = m_inputManager->GetMouseY();
+
+				if (mouseX >= YES_BUTTONL_X && mouseX <= YES_BUTTONL_X + YES_BUTTON_WIDTH && mouseY >= YES_BUTTON_Y && mouseY <= YES_BUTTON_Y + YES_BUTTON_HEIGHT)
 				{
-				case SDL_QUIT:
-				{
+					CreateNewGame();
+				}
+				else if (mouseX >= NO_BUTTON_X && mouseX <= NO_BUTTON_X + NO_BUTTON_WIDTH && mouseY >= NO_BUTTON_Y && mouseY <= NO_BUTTON_Y + NO_BUTTON_HEIGHT) {
 					m_isPlayerWantExit = true;
-					break;
-				}
-				case SDL_MOUSEBUTTONDOWN:
-				{
-					newRect.x = mainEvent.motion.x;
-					newRect.y = mainEvent.motion.y;
-					Rematch(newRect.x, newRect.y);
-				}
-				default:
-				{
-					break;
-				}
 				}
 			}
+
 		}
 		m_renderer->PostFrame();
 	}
@@ -236,3 +197,4 @@ Game::~Game()
 	delete m_board;
 	delete m_renderer;
 }
+
