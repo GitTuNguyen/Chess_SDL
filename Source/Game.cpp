@@ -15,6 +15,7 @@ void Game::CreateNewGame()
 {
 	m_board->Reset();
 	m_renderer->PreRendering();
+	m_renderer->DrawTable();
 	DrawBoard();
 	m_currentPlayer = Color::WHITE;
 }
@@ -117,11 +118,15 @@ void Game::DrawGameOverScreen()
 
 void Game::Update()
 {
-	m_renderer->PreRendering();
-	DrawBoard();
-	bool wasRenderPromotionPawn = false;
 	while (!m_isPlayerWantExit)
-	{
+	{	
+		m_renderer->PreRendering();
+		m_renderer->DrawTable();
+		if (m_currentPiece != nullptr)
+		{
+			m_renderer->DrawAvailableMove(m_currentPieceCoordinate.x, m_currentPieceCoordinate.y, CurrentAvailableMove());
+		}		
+		DrawBoard();
 		m_inputManager->UpdateInput();
 		m_isPlayerWantExit = m_inputManager->IsGoingToQuit();
 		GameResult gameResult = m_board->getGameResult();
@@ -136,36 +141,22 @@ void Game::Update()
 					int mouseY = m_inputManager->GetMouseY();
 					if (boardData[(mouseY - SIZE_EDGE) / SIZE_CELL_PIXEL][(mouseX - SIZE_EDGE) / SIZE_CELL_PIXEL] != nullptr && boardData[(mouseY - SIZE_EDGE) / SIZE_CELL_PIXEL][(mouseX - SIZE_EDGE) / SIZE_CELL_PIXEL]->getColor() == m_currentPlayer)
 					{
-						setCurrentPiece((mouseY - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouseX - SIZE_EDGE) / SIZE_CELL_PIXEL);
-						m_renderer->PreRendering();
-						m_renderer->DrawAvailableMove(m_currentPieceCoordinate.x, m_currentPieceCoordinate.y, CurrentAvailableMove());
-						DrawBoard();
+						setCurrentPiece((mouseY - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouseX - SIZE_EDGE) / SIZE_CELL_PIXEL);						
 					}
 					else if (m_currentPiece != nullptr && CheckValidMove((mouseY - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouseX - SIZE_EDGE) / SIZE_CELL_PIXEL))
 					{
 						UpdateMove((mouseY - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouseX - SIZE_EDGE) / SIZE_CELL_PIXEL);
-						m_renderer->PreRendering();
-						DrawBoard();
 					}
 				}
 			}
-			else {
-				if (!wasRenderPromotionPawn)
-				{
-					m_renderer->PreRendering();
-					DrawBoard();
-					m_renderer->DrawPromotionPawn(PawnPromotionCoordinate.x, PawnPromotionCoordinate.y);
-					wasRenderPromotionPawn = true;
-				}
-				
+			else {				
+				m_renderer->DrawPromotionPawn(PawnPromotionCoordinate.x, PawnPromotionCoordinate.y);
+									
 				if (m_inputManager->IsMouseUp())
 				{
 					int mouseX = m_inputManager->GetMouseX();
 					int mouseY = m_inputManager->GetMouseY();
-					m_board->PromotionPawn(PawnPromotionCoordinate.x, PawnPromotionCoordinate.y, (mouseY - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouseX - SIZE_EDGE) / SIZE_CELL_PIXEL);
-					m_renderer->PreRendering();
-					DrawBoard();
-					wasRenderPromotionPawn = false;
+					m_board->PromotionPawn(PawnPromotionCoordinate.x, PawnPromotionCoordinate.y, (mouseY - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouseX - SIZE_EDGE) / SIZE_CELL_PIXEL);				
 				}
 			}
 		}
@@ -196,5 +187,6 @@ Game::~Game()
 {
 	delete m_board;
 	delete m_renderer;
+	delete m_inputManager;
 }
 

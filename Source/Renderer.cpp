@@ -1,12 +1,16 @@
 #include "Renderer.h"
+#ifndef __ANDROID__
 #include <Windows.h>
+#endif
 #undef DrawText
 
 Renderer::Renderer()
 {
 	//Hide console window
+#ifndef __ANDROID__
 	HWND windowHandle = GetConsoleWindow();
 	ShowWindow(windowHandle, SW_HIDE);
+#endif
 
 	//Init
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
@@ -16,7 +20,7 @@ Renderer::Renderer()
 	}
 
 	//Create window
-	m_window = SDL_CreateWindow("Chess - SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	m_window = SDL_CreateWindow("Chess - SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
 	if (m_window == NULL)
 	{
 		printf("Could not create window %s", SDL_GetError());
@@ -80,13 +84,13 @@ void Renderer::DrawTable()
 	newRect.x = 0;
 	newRect.y = 0;
 	SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["Chess_Stone"], NULL, &newRect);
-	SDL_RenderPresent(m_sdlRenderer);
+	//SDL_RenderPresent(m_sdlRenderer);
 }
 
 void Renderer::PreRendering()
 {
-	
-	DrawTable();
+	SDL_SetRenderDrawColor(m_sdlRenderer, 0, 0, 0, 255);
+	SDL_RenderClear(m_sdlRenderer);
 }
 
 void Renderer::DrawCell(CellType i_cellType, Color i_color, int i_pixelX, int i_pixelY)
