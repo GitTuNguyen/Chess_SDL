@@ -5,9 +5,7 @@ Game::Game()
 	m_board = new Board();
 	m_renderer = new Renderer();
 	m_inputManager = new InputManager();
-	m_currentPlayer = Color::WHITE;
 	m_isPlayerWantExit = false;
-	m_currentPiece = nullptr;
 	LoadPicture();
 }
 
@@ -17,7 +15,6 @@ void Game::CreateNewGame()
 	m_renderer->PreRendering();
 	m_renderer->DrawTable();
 	DrawBoard();
-	m_currentPlayer = Color::WHITE;
 }
 
 void Game::LoadPicture()
@@ -47,56 +44,7 @@ void Game::DrawBoard()
 	}
 }
 
-void Game::setCurrentPiece(int i_X, int i_Y)
-{
-	Piece*** boardData = m_board->getBoardData();
-	m_currentPiece = boardData[i_X][i_Y];
-	m_currentPieceCoordinate.x = i_X;
-	m_currentPieceCoordinate.y = i_Y;
-}
 
-std::vector<Coordinate> Game::CurrentAvailableMove()
-{
-	return m_currentPiece->AvailableMove(m_currentPieceCoordinate.x, m_currentPieceCoordinate.y, m_board->getBoardData());
-}
-
-bool Game::CheckValidMove(int i_X, int i_Y)
-{
-	std::vector<Coordinate> availableMove = CurrentAvailableMove();
-	for (int i = 0; i < availableMove.size(); i++)
-	{
-		if (availableMove[i].x == i_X && availableMove[i].y == i_Y)
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-
-void Game::UpdateMove(int i_MoveX, int i_MoveY)
-{
-	m_board->Move(m_currentPiece, m_currentPieceCoordinate.x, m_currentPieceCoordinate.y, i_MoveX, i_MoveY);
-	m_currentPiece = nullptr;
-	m_currentPlayer = m_currentPlayer == Color::WHITE ? Color::BLACK : Color::WHITE;
-}
-
-bool Game::CheckPawnPromotion(Piece*** i_boardData)
-{
-	for (int i = 0; i < BOARD_HEIGHT; i++)
-	{
-		for (int j = 0; j < BOARD_WIDTH; j++)
-		{
-			if (i_boardData[i][j] != nullptr && (i == 0 || i == BOARD_HEIGHT - 1) && i_boardData[i][j]->getName() == CellType::PAWN)
-			{
-				PawnPromotionCoordinate.x = i;
-				PawnPromotionCoordinate.y = j;
-				return true;
-			}
-		}
-	}
-	return false;
-}
 
 void Game::DrawGameOverScreen()
 {
@@ -122,9 +70,9 @@ void Game::Update()
 	{	
 		m_renderer->PreRendering();
 		m_renderer->DrawTable();
-		if (m_currentPiece != nullptr)
+		if (m_board->GetSelectedPiece() != nullptr)
 		{
-			m_renderer->DrawAvailableMove(m_currentPieceCoordinate.x, m_currentPieceCoordinate.y, CurrentAvailableMove());
+			m_renderer->DrawAvailableMove(m_board->GetSelectedPieceCoordinate().x, m_board->GetSelectedPieceCoordinate().y, m_board->SelectedPieceAvailableMove());
 		}		
 		DrawBoard();
 		m_inputManager->UpdateInput();
@@ -133,30 +81,30 @@ void Game::Update()
 		if (gameResult == GameResult::RUNNING)
 		{
 			Piece*** boardData = m_board->getBoardData();
-			if (!CheckPawnPromotion(boardData))
+			if (!m_board->CheckPawnPromotion())
 			{
 				if (m_inputManager->IsMouseUp())
 				{
 					int mouseX = m_inputManager->GetMouseX();
 					int mouseY = m_inputManager->GetMouseY();
-					if (boardData[(mouseY - SIZE_EDGE) / SIZE_CELL_PIXEL][(mouseX - SIZE_EDGE) / SIZE_CELL_PIXEL] != nullptr && boardData[(mouseY - SIZE_EDGE) / SIZE_CELL_PIXEL][(mouseX - SIZE_EDGE) / SIZE_CELL_PIXEL]->getColor() == m_currentPlayer)
+					if (boardData[(mouseY - LEFT_EDGE) / SIZE_CELL_PIXEL][(mouseX - LEFT_EDGE) / SIZE_CELL_PIXEL] != nullptr && boardData[(mouseY - LEFT_EDGE) / SIZE_CELL_PIXEL][(mouseX - LEFT_EDGE) / SIZE_CELL_PIXEL]->getColor() == m_board->GetCurrentPlayer())
 					{
-						setCurrentPiece((mouseY - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouseX - SIZE_EDGE) / SIZE_CELL_PIXEL);						
+						m_board->SetSelectedPiece((mouseY - LEFT_EDGE) / SIZE_CELL_PIXEL, (mouseX - LEFT_EDGE) / SIZE_CELL_PIXEL);
 					}
-					else if (m_currentPiece != nullptr && CheckValidMove((mouseY - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouseX - SIZE_EDGE) / SIZE_CELL_PIXEL))
+					else if (m_board->GetSelectedPiece() != nullptr && m_board->CheckValidMove((mouseY - LEFT_EDGE) / SIZE_CELL_PIXEL, (mouseX - LEFT_EDGE) / SIZE_CELL_PIXEL))
 					{
-						UpdateMove((mouseY - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouseX - SIZE_EDGE) / SIZE_CELL_PIXEL);
+						m_board->UpdateMove((mouseY - LEFT_EDGE) / SIZE_CELL_PIXEL, (mouseX - LEFT_EDGE) / SIZE_CELL_PIXEL);
 					}
 				}
 			}
 			else {				
-				m_renderer->DrawPromotionPawn(PawnPromotionCoordinate.x, PawnPromotionCoordinate.y);
+				m_renderer->DrawPromotionPawn(m_board->PawnPromotionCoordinate().x, m_board->PawnPromotionCoordinate().y);
 									
 				if (m_inputManager->IsMouseUp())
 				{
 					int mouseX = m_inputManager->GetMouseX();
 					int mouseY = m_inputManager->GetMouseY();
-					m_board->PromotionPawn(PawnPromotionCoordinate.x, PawnPromotionCoordinate.y, (mouseY - SIZE_EDGE) / SIZE_CELL_PIXEL, (mouseX - SIZE_EDGE) / SIZE_CELL_PIXEL);				
+					m_board->PromotionPawn(m_board->PawnPromotionCoordinate().x, m_board->PawnPromotionCoordinate().y, (mouseY - LEFT_EDGE) / SIZE_CELL_PIXEL, (mouseX - LEFT_EDGE) / SIZE_CELL_PIXEL);
 				}
 			}
 		}

@@ -108,6 +108,8 @@ void Board::Reset()
 		}
 	}
 	m_gameResult = GameResult::RUNNING;
+	m_selectedPiece = nullptr;
+	m_currentPlayer = Color::WHITE;
 }
 
 Piece*** Board::getBoardData()
@@ -120,8 +122,6 @@ GameResult Board::getGameResult()
 {
 	return m_gameResult;
 }
-
-
 
 void Board::UpdateGameResult(Piece* i_CurrentPiece, CellType i_recentKillPiece, int i_MoveX, int i_MoveY)
 {
@@ -137,17 +137,64 @@ void Board::UpdateGameResult(Piece* i_CurrentPiece, CellType i_recentKillPiece, 
 		}
 	}
 }
+Piece* Board::GetSelectedPiece()
+{
+	return m_selectedPiece;
+}
+
+std::vector<Coordinate> Board::SelectedPieceAvailableMove()
+{
+	return m_selectedPiece->AvailableMove(m_selectedPieceCoordinate.x, m_selectedPieceCoordinate.y, m_boardData);
+}
+
+bool Board::CheckValidMove(int i_X, int i_Y)
+{
+	std::vector<Coordinate> availableMove = SelectedPieceAvailableMove();
+	for (int i = 0; i < availableMove.size(); i++)
+	{
+		if (availableMove[i].x == i_X && availableMove[i].y == i_Y)
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 void Board::Move(Piece* i_CurrentPiece, int i_CurrentPieceX, int i_CurrentPieceY, int i_MoveX, int i_MoveY)
 {
-	CellType recentKillPiece = CellType::NONE;
+	CellType recentKilledPiece = CellType::NONE;
 	if (m_boardData[i_MoveX][i_MoveY] != nullptr)
 	{
-		recentKillPiece = m_boardData[i_MoveX][i_MoveY]->getName();
+		recentKilledPiece = m_boardData[i_MoveX][i_MoveY]->getName();
 	}
 	m_boardData[i_MoveX][i_MoveY] = i_CurrentPiece;
 	m_boardData[i_CurrentPieceX][i_CurrentPieceY] = nullptr;
-	UpdateGameResult(i_CurrentPiece, recentKillPiece, i_MoveX, i_MoveY);
+	UpdateGameResult(i_CurrentPiece, recentKilledPiece, i_MoveX, i_MoveY);
+}
+
+
+void Board::UpdateMove(int i_MoveX, int i_MoveY)
+{
+	Move(m_selectedPiece, m_selectedPieceCoordinate.x, m_selectedPieceCoordinate.y, i_MoveX, i_MoveY);
+	m_selectedPiece = nullptr;
+	m_currentPlayer = m_currentPlayer == Color::WHITE ? Color::BLACK : Color::WHITE;
+}
+
+bool Board::CheckPawnPromotion()
+{
+	for (int i = 0; i < BOARD_HEIGHT; i++)
+	{
+		for (int j = 0; j < BOARD_WIDTH; j++)
+		{
+			if (m_boardData[i][j] != nullptr && (i == 0 || i == BOARD_HEIGHT - 1) && m_boardData[i][j]->getName() == CellType::PAWN)
+			{
+				m_pawnPromotionCoordinate.x = i;
+				m_pawnPromotionCoordinate.y = j;
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 void Board::PromotionPawn(int i_PawnX, int i_PawnY, int i_mouseX,int  i_mouseY)
@@ -196,6 +243,28 @@ void Board::PromotionPawn(int i_PawnX, int i_PawnY, int i_mouseX,int  i_mouseY)
 			}
 		}
 	}
+}
+
+void Board::SetSelectedPiece(int i_X, int i_Y)
+{	
+	m_selectedPiece = m_boardData[i_X][i_Y];
+	m_selectedPieceCoordinate.x = i_X;
+	m_selectedPieceCoordinate.y = i_Y;
+}
+
+Coordinate Board::GetSelectedPieceCoordinate()
+{
+	return m_selectedPieceCoordinate;
+}
+
+Color Board::GetCurrentPlayer()
+{
+	return m_currentPlayer;
+}
+
+Coordinate Board::PawnPromotionCoordinate()
+{
+	return m_pawnPromotionCoordinate;
 }
 
 Board::~Board()

@@ -4,11 +4,10 @@
 //Board
 #define BOARD_WIDTH 8
 #define BOARD_HEIGHT 8
-#define BOARD_X SIZE_EDGE
-#define BOARD_Y SIZE_EDGE
 
 #define SIZE_CELL_PIXEL 80
-#define SIZE_EDGE 20
+#define LEFT_EDGE 20
+#define TOP_EDGE 22
 
 //Window
 

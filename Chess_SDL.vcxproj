@@ -36,11 +36,11 @@
     <ClCompile Include="Source\Bishop.cpp" />
     <ClCompile Include="Source\Board.cpp" />
     <ClCompile Include="Source\Castle.cpp" />
-    <ClCompile Include="Source\Chess.cpp" />
     <ClCompile Include="Source\Game.cpp" />
     <ClCompile Include="Source\InputManager.cpp" />
     <ClCompile Include="Source\King.cpp" />
     <ClCompile Include="Source\Knight.cpp" />
+    <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Pawn.cpp" />
     <ClCompile Include="Source\Piece.cpp" />
     <ClCompile Include="Source\Queen.cpp" />
