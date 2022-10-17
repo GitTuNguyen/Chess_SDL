@@ -2,7 +2,6 @@
 #include "Board.h"
 #include "Renderer.h"
 #include "InputManager.h"
-#include <iostream>
 
 class Game {
 public:
@@ -18,5 +17,4 @@ private:
 	Renderer* m_renderer;
 	InputManager* m_inputManager;
 	bool m_isPlayerWantExit;
-	SDL_Event mainEvent;
 };

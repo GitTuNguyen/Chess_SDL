@@ -30,9 +30,13 @@ void InputManager::UpdateInput()
 		}
 		case SDL_MOUSEBUTTONUP:
 		{
-			m_isMouseUp = true;
 			m_mouseX = mainEvent.motion.x;
 			m_mouseY = mainEvent.motion.y;
+			if (m_mouseX >= LEFT_EDGE && m_mouseX <= WINDOW_WIDTH - RIGHT_EDGE && m_mouseY >= TOP_EDGE && m_mouseY <= WINDOW_HEIGHT - BELOW_EDGE)
+			{
+				m_isMouseUp = true;
+			}
+
 			break;
 		}
 		default:
@@ -58,7 +62,7 @@ bool InputManager::IsGoingToQuit()
 	return m_isGoingToQuit;
 }
 
-bool InputManager::IsMouseUp()
+bool InputManager::IsMouseClick()
 {
 	return m_isMouseUp;
 }

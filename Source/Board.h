@@ -16,7 +16,7 @@ class Board {
 public:
 	Board();
 	void Reset();
-	Piece*** getBoardData();
+	Piece*** GetBoardData();
 
 	void SetSelectedPiece(int i_X, int i_Y);
 	Piece* GetSelectedPiece();
@@ -32,7 +32,7 @@ public:
 	void UpdateMove(int i_moveX, int i_moveY);
 
 	void UpdateGameResult(Piece* i_CurrentPiece, CellType i_recentKillPiece, int i_MoveX, int i_MoveY);
-	GameResult getGameResult();
+	GameResult GetGameResult();
 
 	Color GetCurrentPlayer();
 

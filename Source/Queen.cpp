@@ -2,13 +2,13 @@
 
 Queen::Queen()
 {
-	setName(CellType::QUEEN);
+	SetName(CellType::QUEEN);
 }
 
 Queen::Queen(Color i_color)
 {
-	setName(CellType::QUEEN);
-	setColor(i_color);
+	SetName(CellType::QUEEN);
+	SetColor(i_color);
 }
 
 std::vector<Coordinate> Queen::AvailableMove(int i_X, int i_Y, Piece*** boardData)
@@ -23,7 +23,7 @@ std::vector<Coordinate> Queen::AvailableMove(int i_X, int i_Y, Piece*** boardDat
 		{
 			move.push_back(availableMove);
 		}
-		else if (boardData[availableMove.x][availableMove.y]->getColor() + boardData[i_X][i_Y]->getColor() == 0)
+		else if (boardData[availableMove.x][availableMove.y]->GetColor() + boardData[i_X][i_Y]->GetColor() == 0)
 		{
 			move.push_back(availableMove);
 			break;
@@ -38,7 +38,7 @@ std::vector<Coordinate> Queen::AvailableMove(int i_X, int i_Y, Piece*** boardDat
 		{
 			move.push_back(availableMove);
 		}
-		else if (boardData[availableMove.x][availableMove.y]->getColor() + boardData[i_X][i_Y]->getColor() == 0)
+		else if (boardData[availableMove.x][availableMove.y]->GetColor() + boardData[i_X][i_Y]->GetColor() == 0)
 		{
 			move.push_back(availableMove);
 			break;
@@ -53,7 +53,7 @@ std::vector<Coordinate> Queen::AvailableMove(int i_X, int i_Y, Piece*** boardDat
 		{
 			move.push_back(availableMove);
 		}
-		else if (boardData[availableMove.x][availableMove.y]->getColor() + boardData[i_X][i_Y]->getColor() == 0)
+		else if (boardData[availableMove.x][availableMove.y]->GetColor() + boardData[i_X][i_Y]->GetColor() == 0)
 		{
 			move.push_back(availableMove);
 			break;
@@ -68,7 +68,7 @@ std::vector<Coordinate> Queen::AvailableMove(int i_X, int i_Y, Piece*** boardDat
 		{
 			move.push_back(availableMove);
 		}
-		else if (boardData[availableMove.x][availableMove.y]->getColor() + boardData[i_X][i_Y]->getColor() == 0)
+		else if (boardData[availableMove.x][availableMove.y]->GetColor() + boardData[i_X][i_Y]->GetColor() == 0)
 		{
 			move.push_back(availableMove);
 			break;
@@ -83,7 +83,7 @@ std::vector<Coordinate> Queen::AvailableMove(int i_X, int i_Y, Piece*** boardDat
 		{
 			move.push_back(availableMove);
 		}
-		else if (boardData[availableMove.x][availableMove.y]->getColor() + boardData[i_X][i_Y]->getColor() == 0)
+		else if (boardData[availableMove.x][availableMove.y]->GetColor() + boardData[i_X][i_Y]->GetColor() == 0)
 		{
 			move.push_back(availableMove);
 			break;
@@ -98,7 +98,7 @@ std::vector<Coordinate> Queen::AvailableMove(int i_X, int i_Y, Piece*** boardDat
 		{
 			move.push_back(availableMove);
 		}
-		else if (boardData[availableMove.x][availableMove.y]->getColor() + boardData[i_X][i_Y]->getColor() == 0)
+		else if (boardData[availableMove.x][availableMove.y]->GetColor() + boardData[i_X][i_Y]->GetColor() == 0)
 		{
 			move.push_back(availableMove);
 			break;
@@ -113,7 +113,7 @@ std::vector<Coordinate> Queen::AvailableMove(int i_X, int i_Y, Piece*** boardDat
 		{
 			move.push_back(availableMove);
 		}
-		else if (boardData[availableMove.x][availableMove.y]->getColor() + boardData[i_X][i_Y]->getColor() == 0)
+		else if (boardData[availableMove.x][availableMove.y]->GetColor() + boardData[i_X][i_Y]->GetColor() == 0)
 		{
 			move.push_back(availableMove);
 			break;
@@ -128,7 +128,7 @@ std::vector<Coordinate> Queen::AvailableMove(int i_X, int i_Y, Piece*** boardDat
 		{
 			move.push_back(availableMove);
 		}
-		else if (boardData[availableMove.x][availableMove.y]->getColor() + boardData[i_X][i_Y]->getColor() == 0)
+		else if (boardData[availableMove.x][availableMove.y]->GetColor() + boardData[i_X][i_Y]->GetColor() == 0)
 		{
 			move.push_back(availableMove);
 			break;

@@ -1,13 +1,13 @@
 #include "Castle.h"
 Castle::Castle()
 {
-	setName(CellType::CASTLE);
+	SetName(CellType::CASTLE);
 }
 
 Castle::Castle(Color i_color)
 {
-	setName(CellType::CASTLE);
-	setColor(i_color);
+	SetName(CellType::CASTLE);
+	SetColor(i_color);
 }
 std::vector<Coordinate> Castle::AvailableMove(int i_X, int i_Y, Piece*** boardData)
 {
@@ -22,7 +22,7 @@ std::vector<Coordinate> Castle::AvailableMove(int i_X, int i_Y, Piece*** boardDa
 		{
 			move.push_back(availableMove);
 		}
-		else if (boardData[availableMove.x][availableMove.y]->getColor() + boardData[i_X][i_Y]->getColor() == 0)
+		else if (boardData[availableMove.x][availableMove.y]->GetColor() + boardData[i_X][i_Y]->GetColor() == 0)
 		{
 			move.push_back(availableMove);
 			break;
@@ -37,7 +37,7 @@ std::vector<Coordinate> Castle::AvailableMove(int i_X, int i_Y, Piece*** boardDa
 		{
 			move.push_back(availableMove);
 		}
-		else if (boardData[availableMove.x][availableMove.y]->getColor() + boardData[i_X][i_Y]->getColor() == 0)
+		else if (boardData[availableMove.x][availableMove.y]->GetColor() + boardData[i_X][i_Y]->GetColor() == 0)
 		{
 			move.push_back(availableMove);
 			break;
@@ -52,7 +52,7 @@ std::vector<Coordinate> Castle::AvailableMove(int i_X, int i_Y, Piece*** boardDa
 		{
 			move.push_back(availableMove);
 		}
-		else if (boardData[availableMove.x][availableMove.y]->getColor() + boardData[i_X][i_Y]->getColor() == 0)
+		else if (boardData[availableMove.x][availableMove.y]->GetColor() + boardData[i_X][i_Y]->GetColor() == 0)
 		{
 			move.push_back(availableMove);
 			break;
@@ -67,7 +67,7 @@ std::vector<Coordinate> Castle::AvailableMove(int i_X, int i_Y, Piece*** boardDa
 		{
 			move.push_back(availableMove);
 		}
-		else if (boardData[availableMove.x][availableMove.y]->getColor() + boardData[i_X][i_Y]->getColor() == 0)
+		else if (boardData[availableMove.x][availableMove.y]->GetColor() + boardData[i_X][i_Y]->GetColor() == 0)
 		{
 			move.push_back(availableMove);
 			break;

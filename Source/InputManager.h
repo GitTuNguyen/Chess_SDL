@@ -1,5 +1,6 @@
 #pragma once
 #include "SDL.h"
+#include "GameDefinition.h"
 
 class InputManager
 {
@@ -9,7 +10,7 @@ public:
 	int GetMouseX();
 	int GetMouseY();
 	bool IsGoingToQuit();
-	bool IsMouseUp();
+	bool IsMouseClick();
 private:
 	int m_mouseX;
 	int m_mouseY;

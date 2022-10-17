@@ -112,13 +112,13 @@ void Board::Reset()
 	m_currentPlayer = Color::WHITE;
 }
 
-Piece*** Board::getBoardData()
+Piece*** Board::GetBoardData()
 {
 	return m_boardData;
 }
 
 
-GameResult Board::getGameResult()
+GameResult Board::GetGameResult()
 {
 	return m_gameResult;
 }
@@ -127,7 +127,7 @@ void Board::UpdateGameResult(Piece* i_CurrentPiece, CellType i_recentKillPiece, 
 {
 	if (i_recentKillPiece == CellType::KING)
 	{
-		if (i_CurrentPiece->getColor() == Color::WHITE)
+		if (i_CurrentPiece->GetColor() == Color::WHITE)
 		{
 			m_gameResult = GameResult::White_Player_WIN;
 		}
@@ -165,7 +165,7 @@ void Board::Move(Piece* i_CurrentPiece, int i_CurrentPieceX, int i_CurrentPieceY
 	CellType recentKilledPiece = CellType::NONE;
 	if (m_boardData[i_MoveX][i_MoveY] != nullptr)
 	{
-		recentKilledPiece = m_boardData[i_MoveX][i_MoveY]->getName();
+		recentKilledPiece = m_boardData[i_MoveX][i_MoveY]->GetName();
 	}
 	m_boardData[i_MoveX][i_MoveY] = i_CurrentPiece;
 	m_boardData[i_CurrentPieceX][i_CurrentPieceY] = nullptr;
@@ -186,7 +186,7 @@ bool Board::CheckPawnPromotion()
 	{
 		for (int j = 0; j < BOARD_WIDTH; j++)
 		{
-			if (m_boardData[i][j] != nullptr && (i == 0 || i == BOARD_HEIGHT - 1) && m_boardData[i][j]->getName() == CellType::PAWN)
+			if (m_boardData[i][j] != nullptr && (i == 0 || i == BOARD_HEIGHT - 1) && m_boardData[i][j]->GetName() == CellType::PAWN)
 			{
 				m_pawnPromotionCoordinate.x = i;
 				m_pawnPromotionCoordinate.y = j;

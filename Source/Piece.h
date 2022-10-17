@@ -4,10 +4,10 @@
 
 class Piece {
 public:
-	void setName(CellType i_name);
-	void setColor(Color i_color);
-	CellType getName();
-	Color getColor();
+	void SetName(CellType i_name);
+	void SetColor(Color i_color);
+	CellType GetName();
+	Color GetColor();
 	virtual std::vector<Coordinate> AvailableMove(int i_X, int i_Y, Piece*** boardData) = 0;
 private:
 	CellType m_name;

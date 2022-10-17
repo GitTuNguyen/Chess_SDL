@@ -1,21 +1,21 @@
 #include "Piece.h"
 
-void Piece::setName(CellType i_name)
+void Piece::SetName(CellType i_name)
 {
 	m_name = i_name;
 }
 
-void Piece::setColor(Color i_color)
+void Piece::SetColor(Color i_color)
 {
 	m_color = i_color;
 }
 
-CellType Piece::getName()
+CellType Piece::GetName()
 {
 	return m_name;
 }
 
-Color Piece::getColor() 
+Color Piece::GetColor() 
 {
 	return m_color;
 }
