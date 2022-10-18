@@ -2,27 +2,27 @@
 
 King::King()
 {
-	SetName(CellType::KING);
+	SetName(PieceType::KING);
 }
 
 King::King(Color i_color)
 {
-	SetName(CellType::KING);
+	SetName(PieceType::KING);
 	SetColor(i_color);
 }
-std::vector<Coordinate> King::AvailableMove(int i_X, int i_Y, Piece*** boardData)
+std::vector<Coordinate> King::AvailableMove(Piece*** boardData)
 {
 	std::vector<Coordinate> move;
 	Coordinate availableMove;
 
-	for (int x = i_X - 1; x <= i_X + 1; x++)
+	for (int x = m_coordinate.row - 1; x <= m_coordinate.row + 1; x++)
 	{
-		for (int y = i_Y - 1; y <= i_Y + 1; y++)
+		for (int y = m_coordinate.col - 1; y <= m_coordinate.col + 1; y++)
 		{
-			if (x >= 0 && x < BOARD_HEIGHT && y >= 0 && y < BOARD_WIDTH && (x != i_X || y != i_Y) && (boardData[x][y] == nullptr || boardData[x][y]->GetColor() + boardData[i_X][i_Y]->GetColor() == 0))
+			if (x >= 0 && x < BOARD_HEIGHT && y >= 0 && y < BOARD_WIDTH && (x != m_coordinate.row || y != m_coordinate.col) && (boardData[x][y] == nullptr || boardData[x][y]->GetColor() + boardData[m_coordinate.row][m_coordinate.col]->GetColor() == 0))
 			{
-				availableMove.x = x;
-				availableMove.y = y;
+				availableMove.row = x;
+				availableMove.col = y;
 				move.push_back(availableMove);
 			}
 		}

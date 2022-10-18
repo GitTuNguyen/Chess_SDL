@@ -53,7 +53,7 @@
 #define NO_BUTTON_X (YES_BUTTONL_X + CELL_SIZE * 3)
 #define NO_BUTTON_Y YES_BUTTON_Y
 
-enum CellType {
+enum PieceType {
 	KING, //Vua
 	QUEEN, //Hau
 	BISHOP, //Tuong
@@ -69,6 +69,14 @@ enum Color {
 };
 
 struct Coordinate {
-	int x;
-	int y;
+	int row;
+	int col;
+
+	Coordinate() {}
+
+	Coordinate(int i_row, int i_col)
+	{
+		row = i_row;
+		col = i_col;
+	}
 };

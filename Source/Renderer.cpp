@@ -93,7 +93,7 @@ void Renderer::PreRendering()
 	SDL_RenderClear(m_sdlRenderer);
 }
 
-void Renderer::DrawCell(CellType i_cellType, Color i_color, int i_pixelX, int i_pixelY)
+void Renderer::DrawCell(PieceType i_cellType, Color i_color, int i_pixelX, int i_pixelY)
 {
 	SDL_Rect newRect;
 	newRect.w = CELL_SIZE;
@@ -101,7 +101,7 @@ void Renderer::DrawCell(CellType i_cellType, Color i_color, int i_pixelX, int i_
 	newRect.x = i_pixelX + LEFT_EDGE;
 	newRect.y = i_pixelY + TOP_EDGE;
 
-	if (i_cellType == CellType::KING)
+	if (i_cellType == PieceType::KING)
 	{
 		if ( i_color == Color::BLACK)
 		{
@@ -111,7 +111,7 @@ void Renderer::DrawCell(CellType i_cellType, Color i_color, int i_pixelX, int i_
 			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["KingW"], NULL, &newRect);
 		}
 	} 
-	else if (i_cellType == CellType::QUEEN)
+	else if (i_cellType == PieceType::QUEEN)
 	{
 		if (i_color == Color::BLACK)
 		{
@@ -122,7 +122,7 @@ void Renderer::DrawCell(CellType i_cellType, Color i_color, int i_pixelX, int i_
 		}
 
 		}
-	else if (i_cellType == CellType::BISHOP)
+	else if (i_cellType == PieceType::BISHOP)
 	{
 		if (i_color == Color::BLACK)
 		{
@@ -132,7 +132,7 @@ void Renderer::DrawCell(CellType i_cellType, Color i_color, int i_pixelX, int i_
 			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["BishopW"], NULL, &newRect);
 		}
 	}
-	else if (i_cellType == CellType::KNIGHT)
+	else if (i_cellType == PieceType::KNIGHT)
 	{
 		if (i_color == Color::BLACK)
 		{
@@ -142,7 +142,7 @@ void Renderer::DrawCell(CellType i_cellType, Color i_color, int i_pixelX, int i_
 			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["KnightW"], NULL, &newRect);
 		}
 	}
-	else if (i_cellType == CellType::CASTLE)
+	else if (i_cellType == PieceType::CASTLE)
 	{
 		if (i_color == Color::BLACK)
 		{
@@ -152,7 +152,7 @@ void Renderer::DrawCell(CellType i_cellType, Color i_color, int i_pixelX, int i_
 			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["CastleW"], NULL, &newRect);
 		}
 	}
-	else if (i_cellType == CellType::PAWN)
+	else if (i_cellType == PieceType::PAWN)
 	{
 		if (i_color == Color::BLACK)
 		{
@@ -170,30 +170,30 @@ void Renderer::DrawSelectionPromotionPawn(int i_DrawX, int i_DrawY, Color i_colo
 	{
 		if (i == 0)
 		{
-			DrawCell(CellType::QUEEN, i_color, i_DrawX - LEFT_EDGE, i_DrawY - LEFT_EDGE);			
+			DrawCell(PieceType::QUEEN, i_color, i_DrawX - LEFT_EDGE, i_DrawY - LEFT_EDGE);			
 		}
 		else if (i == 1)
 		{
-			DrawCell(CellType::KNIGHT, i_color, i_DrawX - LEFT_EDGE, i_DrawY - LEFT_EDGE + CELL_SIZE);
+			DrawCell(PieceType::KNIGHT, i_color, i_DrawX - LEFT_EDGE, i_DrawY - LEFT_EDGE + CELL_SIZE);
 		}
 		else if (i == 2)
 		{
-			DrawCell(CellType::CASTLE, i_color, i_DrawX - LEFT_EDGE, i_DrawY - LEFT_EDGE + (2 * CELL_SIZE) );
+			DrawCell(PieceType::CASTLE, i_color, i_DrawX - LEFT_EDGE, i_DrawY - LEFT_EDGE + (2 * CELL_SIZE) );
 		}
 		else if (i == 3)
 		{
-			DrawCell(CellType::BISHOP, i_color, i_DrawX - LEFT_EDGE, i_DrawY - LEFT_EDGE + (3 * CELL_SIZE));
+			DrawCell(PieceType::BISHOP, i_color, i_DrawX - LEFT_EDGE, i_DrawY - LEFT_EDGE + (3 * CELL_SIZE));
 		}
 	}
 }
 
-void Renderer::DrawPromotionPawn(int i_PawnX, int i_PawnY)
+void Renderer::DrawPromotionPawn(Coordinate i_pawnPromotionCoordiante)
 {
 	Color tempColor;
 	SDL_Rect newRect;
 	newRect.h = CELL_SIZE * 4;
 	newRect.w = CELL_SIZE;
-	if (i_PawnX == 0)
+	if (i_pawnPromotionCoordiante.row == 0)
 	{
 		newRect.y = TOP_EDGE;
 		tempColor = Color::WHITE;
@@ -202,12 +202,12 @@ void Renderer::DrawPromotionPawn(int i_PawnX, int i_PawnY)
 		newRect.y = (BOARD_HEIGHT - 4) * CELL_SIZE + TOP_EDGE;
 		tempColor = Color::BLACK;
 	}
-	if (i_PawnY == 0)
+	if (i_pawnPromotionCoordiante.col == 0)
 	{
-		newRect.x = (i_PawnY + 1) * CELL_SIZE + LEFT_EDGE;
+		newRect.x = (i_pawnPromotionCoordiante.col + 1) * CELL_SIZE + LEFT_EDGE;
 	}
 	else {
-		newRect.x = (i_PawnY - 1) * CELL_SIZE + LEFT_EDGE;
+		newRect.x = (i_pawnPromotionCoordiante.col - 1) * CELL_SIZE + LEFT_EDGE;
 	}
 
 	SDL_SetRenderDrawColor(m_sdlRenderer, 255, 255, 255, 255);
@@ -216,11 +216,11 @@ void Renderer::DrawPromotionPawn(int i_PawnX, int i_PawnY)
 	DrawSelectionPromotionPawn(newRect.x, newRect.y, tempColor);
 }
 
-void Renderer::DrawAvailableMove(int i_CurrentPiece_X, int i_CurrentPiece_Y, std::vector<Coordinate> i_availableMove)
+void Renderer::DrawAvailableMove(Coordinate i_selectedPieceCoordinate, std::vector<Coordinate> i_availableMove)
 {
 	SDL_Rect newRect;
-	newRect.x = i_CurrentPiece_Y * CELL_SIZE + LEFT_EDGE;
-	newRect.y = i_CurrentPiece_X * CELL_SIZE + TOP_EDGE;
+	newRect.x = i_selectedPieceCoordinate.col * CELL_SIZE + LEFT_EDGE;
+	newRect.y = i_selectedPieceCoordinate.row * CELL_SIZE + TOP_EDGE;
 	newRect.h = CELL_SIZE;
 	newRect.w = CELL_SIZE;
 	SDL_SetRenderDrawColor(m_sdlRenderer, 0, 128, 0, 150);
@@ -228,8 +228,8 @@ void Renderer::DrawAvailableMove(int i_CurrentPiece_X, int i_CurrentPiece_Y, std
 	SDL_SetRenderDrawColor(m_sdlRenderer, 31, 224, 108, 150);
 	for (int i = 0; i < i_availableMove.size(); i++)
 	{
-		newRect.x = i_availableMove[i].y * CELL_SIZE + LEFT_EDGE;
-		newRect.y = i_availableMove[i].x * CELL_SIZE + TOP_EDGE;
+		newRect.x = i_availableMove[i].col * CELL_SIZE + LEFT_EDGE;
+		newRect.y = i_availableMove[i].row * CELL_SIZE + TOP_EDGE;
 		SDL_RenderFillRect(m_sdlRenderer, &newRect);
 	}
 }

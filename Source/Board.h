@@ -1,16 +1,10 @@
 #pragma once
-#include <cstdlib>
-#include "King.h"
-#include "Queen.h"
-#include "Castle.h"
-#include "Knight.h"
-#include "Bishop.h"
-#include "Pawn.h"
+#include "Piece.h"
 
 enum GameResult {
 	RUNNING,
-	White_Player_WIN,
-	Black_Player_WIN
+	WHITE_WIN,
+	BLACK_WIN
 };
 class Board {
 public:
@@ -18,32 +12,32 @@ public:
 	void Reset();
 	Piece*** GetBoardData();
 
-	void SetSelectedPiece(int i_X, int i_Y);
+	void SetSelectedPiece(int i_row, int i_col);
 	Piece* GetSelectedPiece();
-	std::vector<Coordinate> SelectedPieceAvailableMove();
-	Coordinate GetSelectedPieceCoordinate();
+	std::vector<Coordinate> GetCurrentAvailableMove();
+	
+	void CheckPawnPromotion(int i_selectedRow, int i_selectedCol);
+	bool HasPawnPromotion();
+	void PromotionPawn(PieceType i_piece);
 
-	Coordinate PawnPromotionCoordinate();
-	bool CheckPawnPromotion();
-	void PromotionPawn(int i_PawnX, int i_PawnY, int i_mouseX, int i_mouseY);
+	bool CheckValidMove(int i_row, int i_col);
+	void Move(int i_targetRow, int i_targeCol);
 
-	bool CheckValidMove(int i_X, int i_Y);
-	void Move(Piece* i_CurrentPiece, int i_CurrentPieceX, int i_CurrentPieceY, int i_MoveX, int i_MoveY);
-	void UpdateMove(int i_moveX, int i_moveY);
-
-	void UpdateGameResult(Piece* i_CurrentPiece, CellType i_recentKillPiece, int i_MoveX, int i_MoveY);
+	void UpdateGameResult(PieceType i_recentKillPiece);
 	GameResult GetGameResult();
 
+	void NextPlayerTurn();
 	Color GetCurrentPlayer();
+
 
 	~Board();
 private:
-	Piece* AddPiece(CellType i_name, Color i_color);
+	void CreatePiece(PieceType i_name, Color i_color, Coordinate i_coordinate);
+	void RemovePiece(int i_row, int i_col);
 	Piece*** m_boardData;
 	GameResult m_gameResult;
 	Piece* m_selectedPiece;
-	Coordinate m_selectedPieceCoordinate;
-	Coordinate m_pawnPromotionCoordinate;
 	Color m_currentPlayer;
-
+	bool m_isBoardInitialized;
+	bool m_hasPawnPromotion;
 };

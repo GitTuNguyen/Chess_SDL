@@ -4,12 +4,16 @@
 
 class Piece {
 public:
-	void SetName(CellType i_name);
+	void SetName(PieceType i_name);
 	void SetColor(Color i_color);
-	CellType GetName();
+	void SetCoordinate(Coordinate i_coordinate);	
+	PieceType GetName();
 	Color GetColor();
-	virtual std::vector<Coordinate> AvailableMove(int i_X, int i_Y, Piece*** boardData) = 0;
+	Coordinate GetCoordinate();
+	virtual std::vector<Coordinate> AvailableMove(Piece*** boardData) = 0;
+protected:
+	Coordinate m_coordinate;
 private:
-	CellType m_name;
-	Color m_color;	
+	PieceType m_name;
+	Color m_color;
 };

@@ -44,18 +44,16 @@ void Game::DrawBoard()
 	}
 }
 
-
-
 void Game::DrawGameOverScreen()
 {
 	m_renderer->DrawGameOverPopup();
 	std::string gameResultString;
 	switch (m_board->GetGameResult())
 	{
-	case White_Player_WIN:
+	case WHITE_WIN:
 		gameResultString = "White Player WIN";
 		break;
-	case Black_Player_WIN:
+	case BLACK_WIN:
 		gameResultString = "Black Player WIN";
 		break;
 	default:
@@ -63,6 +61,8 @@ void Game::DrawGameOverScreen()
 	}
 	m_renderer->DrawText(gameResultString, TEXT_SIZE, TEXT_GAME_RESULT_X, TEXT_GAME_RESULT_Y, TEXT_GAME_RESULT_HEIGHT, TEXT_GAME_RESULT_WIDTH);
 }
+
+
 
 void Game::Update()
 {
@@ -79,24 +79,24 @@ void Game::Update()
 		{
 			mouseX = m_inputManager->GetMouseX();
 			mouseY = m_inputManager->GetMouseY();
+			int clickedRow = (mouseY - TOP_EDGE) / CELL_SIZE;
+			int clickedCol = (mouseX - LEFT_EDGE) / CELL_SIZE;
 			if (gameResult == GameResult::RUNNING)
 			{
 				Piece*** boardData = m_board->GetBoardData();
-				if (!m_board->CheckPawnPromotion())
-				{
-					int clickedRow = (mouseY - TOP_EDGE) / CELL_SIZE;
-					int clickedCol = (mouseX - LEFT_EDGE) / CELL_SIZE;
+				if (!m_board->HasPawnPromotion())
+				{					
 					if (boardData[clickedRow][clickedCol] != nullptr && boardData[clickedRow][clickedCol]->GetColor() == m_board->GetCurrentPlayer())
 					{
 						m_board->SetSelectedPiece(clickedRow, clickedCol);
 					}
 					else if (m_board->GetSelectedPiece() != nullptr && m_board->CheckValidMove(clickedRow, clickedCol))
 					{
-						m_board->UpdateMove(clickedRow, clickedCol);
+						m_board->Move(clickedRow, clickedCol);
 					}
 				}
 				else {
-					m_board->PromotionPawn(m_board->PawnPromotionCoordinate().x, m_board->PawnPromotionCoordinate().y, (mouseY - LEFT_EDGE) / CELL_SIZE, (mouseX - LEFT_EDGE) / CELL_SIZE);
+					m_board->CheckPawnPromotion(clickedRow, clickedCol);
 				}
 			}
 			else {
@@ -110,18 +110,18 @@ void Game::Update()
 
 			}
 		}
-		hasPawnPromotion = m_board->CheckPawnPromotion();
+		hasPawnPromotion = m_board->HasPawnPromotion();
 		isGameOver = gameResult != GameResult::RUNNING;
 		m_renderer->PreRendering();
 		m_renderer->DrawTable();
 		if (m_board->GetSelectedPiece() != nullptr)
 		{
-			m_renderer->DrawAvailableMove(m_board->GetSelectedPieceCoordinate().x, m_board->GetSelectedPieceCoordinate().y, m_board->SelectedPieceAvailableMove());
+			m_renderer->DrawAvailableMove(m_board->GetSelectedPiece()->GetCoordinate(), m_board->GetCurrentAvailableMove());
 		}
 		DrawBoard();
 		if (hasPawnPromotion)
 		{
-			m_renderer->DrawPromotionPawn(m_board->PawnPromotionCoordinate().x, m_board->PawnPromotionCoordinate().y);
+			m_renderer->DrawPromotionPawn(m_board->GetSelectedPiece()->GetCoordinate());
 		}
 		if (isGameOver)
 		{

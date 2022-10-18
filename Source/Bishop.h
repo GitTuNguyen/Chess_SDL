@@ -6,7 +6,7 @@ class Bishop : public Piece {
 public:
 	Bishop();
 	Bishop(Color i_color);
-	std::vector<Coordinate> AvailableMove(int i_X, int i_Y, Piece*** boardData) override;
+	std::vector<Coordinate> AvailableMove(Piece*** boardData) override;
 private:
 
 };
