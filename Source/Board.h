@@ -18,15 +18,13 @@ public:
 	
 	void CheckPawnPromotion(int i_selectedRow, int i_selectedCol);
 	bool HasPawnPromotion();
-	void PromotionPawn(PieceType i_piece);
-
+	
 	bool CheckValidMove(int i_row, int i_col);
 	void Move(int i_targetRow, int i_targeCol);
 
 	void UpdateGameResult(PieceType i_recentKillPiece);
 	GameResult GetGameResult();
 
-	void NextPlayerTurn();
 	Color GetCurrentPlayer();
 
 
@@ -34,6 +32,8 @@ public:
 private:
 	void CreatePiece(PieceType i_name, Color i_color, Coordinate i_coordinate);
 	void RemovePiece(int i_row, int i_col);
+	void PromotionPawn(PieceType i_piece);
+	void NextPlayerTurn();
 	Piece*** m_boardData;
 	GameResult m_gameResult;
 	Piece* m_selectedPiece;
