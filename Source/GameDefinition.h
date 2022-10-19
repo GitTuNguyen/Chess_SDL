@@ -8,7 +8,7 @@
 #define CELL_SIZE 80
 #define LEFT_EDGE 20
 #define TOP_EDGE 22
-#define BELOW_EDGE 20
+#define BOTTOM_EDGE 20
 #define RIGHT_EDGE 20
 
 //Window

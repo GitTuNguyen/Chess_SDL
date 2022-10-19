@@ -5,12 +5,12 @@ InputManager::InputManager()
 	m_mouseX = 0;
 	m_mouseY = 0;
 	m_isGoingToQuit = false;
-	m_isMouseUp = false;
+	m_isMouseClicked = false;
 }
 
 void InputManager::UpdateInput()
 {
-	m_isMouseUp = false;
+	m_isMouseClicked = false;
 	SDL_Event mainEvent;
 	m_mouseX = 0;
 	m_mouseY = 0;
@@ -23,18 +23,13 @@ void InputManager::UpdateInput()
 			m_isGoingToQuit = true;
 			break;
 		}
-		case SDL_MOUSEBUTTONDOWN:
-		{
-			m_isMouseUp = false;
-			break;
-		}
 		case SDL_MOUSEBUTTONUP:
 		{
 			m_mouseX = mainEvent.motion.x;
 			m_mouseY = mainEvent.motion.y;
-			if (m_mouseX >= LEFT_EDGE && m_mouseX <= WINDOW_WIDTH - RIGHT_EDGE && m_mouseY >= TOP_EDGE && m_mouseY <= WINDOW_HEIGHT - BELOW_EDGE)
+			if (m_mouseX >= LEFT_EDGE && m_mouseX <= WINDOW_WIDTH - RIGHT_EDGE && m_mouseY >= TOP_EDGE && m_mouseY <= WINDOW_HEIGHT - BOTTOM_EDGE)
 			{
-				m_isMouseUp = true;
+				m_isMouseClicked = true;
 			}
 
 			break;
@@ -64,5 +59,5 @@ bool InputManager::IsGoingToQuit()
 
 bool InputManager::IsMouseClick()
 {
-	return m_isMouseUp;
+	return m_isMouseClicked;
 }
