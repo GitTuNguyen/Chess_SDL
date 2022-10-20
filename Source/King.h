@@ -8,6 +8,6 @@ class King : public Piece
 public:
 	King();
 	King(Color i_color);
-	std::vector<Coordinate> AvailableMove(Piece*** boardData) override;
+	std::vector<Coordinate> AvailableMove(Piece*** i_boardData) override;
 private:
 };

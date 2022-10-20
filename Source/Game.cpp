@@ -71,7 +71,7 @@ void Game::DrawBoard()
 				continue;
 			} else
 			{
-				m_renderer->DrawPiece(boardData[i][j]->GetName(), boardData[i][j]->GetColor(), j * CELL_SIZE, i * CELL_SIZE);
+				m_renderer->DrawPiece(boardData[i][j]->GetType(), boardData[i][j]->GetColor(), j * CELL_SIZE, i * CELL_SIZE);
 			}
 		}
 	}

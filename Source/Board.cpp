@@ -121,9 +121,14 @@ Piece* Board::GetSelectedPiece()
 	return m_selectedPiece;
 }
 
+void Board::UpdateCurrentAvailableMoves()
+{
+	m_currentAvailableMoves = m_selectedPiece->AvailableMove(m_boardData);
+}
+
 std::vector<Coordinate> Board::GetCurrentAvailableMove()
 {
-	return m_selectedPiece->AvailableMove(m_boardData);
+	return m_currentAvailableMoves;
 }
 
 bool Board::CheckValidMove(int i_row, int i_col)
@@ -156,7 +161,7 @@ void Board::Move(int i_targetRow, int i_targetCol)
 	PieceType recentKilledPiece = PieceType::NONE;
 	if (m_boardData[i_targetRow][i_targetCol] != nullptr)
 	{
-		recentKilledPiece = m_boardData[i_targetRow][i_targetCol]->GetName();
+		recentKilledPiece = m_boardData[i_targetRow][i_targetCol]->GetType();
 		RemovePiece(i_targetRow, i_targetCol);
 	}
 
@@ -170,7 +175,7 @@ void Board::Move(int i_targetRow, int i_targetCol)
 	UpdateGameResult(recentKilledPiece);
 	if (m_gameResult == RUNNING)
 	{
-		if (m_selectedPiece->GetName() == PieceType::PAWN)
+		if (m_selectedPiece->GetType() == PieceType::PAWN)
 		{
 			if (m_selectedPiece->GetCoordinate().row == 0 || m_selectedPiece->GetCoordinate().row == BOARD_HEIGHT - 1)
 			{
@@ -259,6 +264,7 @@ void Board::PromotionPawn(PieceType i_piece)
 void Board::SetSelectedPiece(int i_row, int i_col)
 {	
 	m_selectedPiece = m_boardData[i_row][i_col];
+	UpdateCurrentAvailableMoves();
 }
 
 Color Board::GetCurrentPlayer()

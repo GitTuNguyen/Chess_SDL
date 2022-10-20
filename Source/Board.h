@@ -14,6 +14,7 @@ public:
 
 	void SetSelectedPiece(int i_row, int i_col);
 	Piece* GetSelectedPiece();
+	void UpdateCurrentAvailableMoves();
 	std::vector<Coordinate> GetCurrentAvailableMove();
 	
 	void CheckPawnPromotion(int i_selectedRow, int i_selectedCol);
@@ -40,4 +41,5 @@ private:
 	Color m_currentPlayer;
 	bool m_isBoardInitialized;
 	bool m_hasPawnPromotion;
+	std::vector<Coordinate> m_currentAvailableMoves;
 };

@@ -5,7 +5,7 @@ class Pawn : public Piece {
 public:
 	Pawn();
 	Pawn(Color i_color);
-	std::vector<Coordinate> AvailableMove(Piece*** boardData) override;
+	std::vector<Coordinate> AvailableMove(Piece*** i_boardData) override;
 private:
 
 };

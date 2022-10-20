@@ -2,138 +2,25 @@
 
 Queen::Queen()
 {
-	SetName(PieceType::QUEEN);
+	m_type = PieceType::QUEEN;
 }
 
 Queen::Queen(Color i_color)
 {
-	SetName(PieceType::QUEEN);
-	SetColor(i_color);
+	m_type = PieceType::QUEEN;
+	m_color = i_color;
 }
 
-std::vector<Coordinate> Queen::AvailableMove(Piece*** boardData)
+std::vector<Coordinate> Queen::AvailableMove(Piece*** i_boardData)
 {
-	std::vector<Coordinate> move;
-	Coordinate availableMove;
-	for (int i = 1; m_coordinate.row + i < BOARD_HEIGHT; i++)
-	{
-		availableMove.row = m_coordinate.row + i;
-		availableMove.col = m_coordinate.col;
-		if (boardData[availableMove.row][availableMove.col] == nullptr)
-		{
-			move.push_back(availableMove);
-		}
-		else if (boardData[availableMove.row][availableMove.col]->GetColor() + boardData[m_coordinate.row][m_coordinate.col]->GetColor() == 0)
-		{
-			move.push_back(availableMove);
-			break;
-		}
-		else break;
-	}
-	for (int i = 1; m_coordinate.row - i >= 0; i++)
-	{
-		availableMove.row = m_coordinate.row - i;
-		availableMove.col = m_coordinate.col;
-		if (boardData[availableMove.row][availableMove.col] == nullptr)
-		{
-			move.push_back(availableMove);
-		}
-		else if (boardData[availableMove.row][availableMove.col]->GetColor() + boardData[m_coordinate.row][m_coordinate.col]->GetColor() == 0)
-		{
-			move.push_back(availableMove);
-			break;
-		}
-		else break;
-	}
-	for (int i = 1; m_coordinate.col - i >= 0; i++)
-	{
-		availableMove.row = m_coordinate.row;
-		availableMove.col = m_coordinate.col - i;
-		if (boardData[availableMove.row][availableMove.col] == nullptr)
-		{
-			move.push_back(availableMove);
-		}
-		else if (boardData[availableMove.row][availableMove.col]->GetColor() + boardData[m_coordinate.row][m_coordinate.col]->GetColor() == 0)
-		{
-			move.push_back(availableMove);
-			break;
-		}
-		else break;
-	}
-	for (int i = 1; m_coordinate.col + i < BOARD_WIDTH; i++)
-	{
-		availableMove.row = m_coordinate.row;
-		availableMove.col = m_coordinate.col + i;
-		if (boardData[availableMove.row][availableMove.col] == nullptr)
-		{
-			move.push_back(availableMove);
-		}
-		else if (boardData[availableMove.row][availableMove.col]->GetColor() + boardData[m_coordinate.row][m_coordinate.col]->GetColor() == 0)
-		{
-			move.push_back(availableMove);
-			break;
-		}
-		else break;
-	}
-	for (int i = 1; m_coordinate.row + i < BOARD_HEIGHT && m_coordinate.col + i < BOARD_WIDTH; i++)
-	{
-		availableMove.row = m_coordinate.row + i;
-		availableMove.col = m_coordinate.col + i;
-		if (boardData[availableMove.row][availableMove.col] == nullptr)
-		{
-			move.push_back(availableMove);
-		}
-		else if (boardData[availableMove.row][availableMove.col]->GetColor() + boardData[m_coordinate.row][m_coordinate.col]->GetColor() == 0)
-		{
-			move.push_back(availableMove);
-			break;
-		}
-		else break;
-	}
-	for (int i = 1; m_coordinate.row - i >= 0 && m_coordinate.col - i >= 0; i++)
-	{
-		availableMove.row = m_coordinate.row - i;
-		availableMove.col = m_coordinate.col - i;
-		if (boardData[availableMove.row][availableMove.col] == nullptr)
-		{
-			move.push_back(availableMove);
-		}
-		else if (boardData[availableMove.row][availableMove.col]->GetColor() + boardData[m_coordinate.row][m_coordinate.col]->GetColor() == 0)
-		{
-			move.push_back(availableMove);
-			break;
-		}
-		else break;
-	}
-	for (int i = 1; m_coordinate.row + i < BOARD_HEIGHT && m_coordinate.col - i >= 0; i++)
-	{
-		availableMove.row = m_coordinate.row + i;
-		availableMove.col = m_coordinate.col - i;
-		if (boardData[availableMove.row][availableMove.col] == nullptr)
-		{
-			move.push_back(availableMove);
-		}
-		else if (boardData[availableMove.row][availableMove.col]->GetColor() + boardData[m_coordinate.row][m_coordinate.col]->GetColor() == 0)
-		{
-			move.push_back(availableMove);
-			break;
-		}
-		else break;
-	}
-	for (int i = 1; m_coordinate.row - i >= 0 && m_coordinate.col + i < BOARD_WIDTH; i++)
-	{
-		availableMove.row = m_coordinate.row - i;
-		availableMove.col = m_coordinate.col + i;
-		if (boardData[availableMove.row][availableMove.col] == nullptr)
-		{
-			move.push_back(availableMove);
-		}
-		else if (boardData[availableMove.row][availableMove.col]->GetColor() + boardData[m_coordinate.row][m_coordinate.col]->GetColor() == 0)
-		{
-			move.push_back(availableMove);
-			break;
-		}
-		else break;
-	}
-	return move;
+	std::vector<Coordinate> moves;
+	GetAvailableMoveByDirection(k_directionDownLeft, i_boardData, moves);
+	GetAvailableMoveByDirection(k_directionUpLeft, i_boardData, moves);
+	GetAvailableMoveByDirection(k_directionDownRight, i_boardData, moves);
+	GetAvailableMoveByDirection(k_directionUpRight, i_boardData, moves);
+	GetAvailableMoveByDirection(k_directionLeft, i_boardData, moves);
+	GetAvailableMoveByDirection(k_directionUp, i_boardData, moves);
+	GetAvailableMoveByDirection(k_directionDown, i_boardData, moves);
+	GetAvailableMoveByDirection(k_directionRight, i_boardData, moves);
+	return moves;
 }
