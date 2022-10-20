@@ -10,9 +10,8 @@ class Renderer {
 public:
 	Renderer();
 	void DrawPiece(PieceType i_cellType, Color i_color, int i_pixelX, int i_pixelY);
-	void DrawBoadData();
 	void DrawTable();
-	void DrawSelectionPromotionPawn(int i_DrawX, int i_DrawY, Color i_color);
+	void DrawPromotionOption(int i_DrawX, int i_DrawY, Color i_color);
 	void DrawPromotionPawn(Coordinate i_pawnPromotionCoordiante);
 	void DrawAvailableMove(Coordinate i_selectedPieceCoordinate, std::vector<Coordinate> i_availableMove);
 	void DrawText(std::string i_text, int i_size, int i_X, int i_Y, int i_H, int i_W);
@@ -27,4 +26,5 @@ private:
 	SDL_Renderer* m_sdlRenderer = NULL;
 	std::map<std::string, SDL_Texture*> m_loadedTextures;
 	std::map<std::pair<PieceType, Color>, SDL_Texture*> m_loadedPieceTextures;
+	std::map<short, TTF_Font*> m_loadedFonts;
 };

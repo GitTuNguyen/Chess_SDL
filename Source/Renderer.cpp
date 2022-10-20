@@ -187,7 +187,16 @@ void Renderer::DrawAvailableMove(Coordinate i_selectedPieceCoordinate, std::vect
 
 void Renderer::DrawText(std::string i_text, int i_size, int i_X, int i_Y, int i_H, int i_W)
 {
-	TTF_Font* font = TTF_OpenFont("Data/font.ttf", i_size);
+	TTF_Font* font;
+	if (m_loadedFonts.find(i_size) == m_loadedFonts.end())
+	{
+		font = TTF_OpenFont("Data/font.ttf", i_size);
+		m_loadedFonts.insert({ i_size, font });
+	}
+	else
+	{
+		font = m_loadedFonts[i_size];
+	}
 	SDL_Color White = { 255, 255, 255 };
 	const char* renderText = i_text.c_str();
 	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, renderText, White);
