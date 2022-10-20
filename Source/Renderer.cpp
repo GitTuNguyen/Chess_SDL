@@ -47,13 +47,15 @@ Renderer::Renderer()
 		SDL_Log("%s", TTF_GetError());
 		return;
 	}
+
+	IMG_Init(IMG_INIT_PNG);
 }
 
 void Renderer::CleanUp()
 {
 	SDL_DestroyRenderer(m_sdlRenderer);	//cleans up all initialized subsystems
 
-	SDL_DestroyWindow(m_window);	//Destroy a renderer
+	SDL_DestroyWindow(m_window);	//Destroy window
 	
 	SDL_Quit();
 }
@@ -66,7 +68,6 @@ void Renderer::PostFrame()
 
 void Renderer::LoadTexture(std::string i_ImageName)
 {
-	IMG_Init(IMG_INIT_PNG);
 	SDL_Surface* tempSurface = NULL;
 	SDL_Texture* texture = NULL;
 	std::string str = "Data/" + i_ImageName + ".png";
@@ -74,6 +75,17 @@ void Renderer::LoadTexture(std::string i_ImageName)
 	texture = SDL_CreateTextureFromSurface(m_sdlRenderer, tempSurface);
 	SDL_FreeSurface(tempSurface);
 	m_loadedTextures.insert(std::pair<std::string, SDL_Texture*>(i_ImageName, texture));
+}
+
+void Renderer::LoadPieceTexture(std::string i_imageName, PieceType i_type, Color i_color)
+{
+	SDL_Surface* tempSurface = NULL;
+	SDL_Texture* texture = NULL;
+	std::string str = "Data/" + i_imageName + ".png";
+	tempSurface = IMG_Load(str.c_str());
+	texture = SDL_CreateTextureFromSurface(m_sdlRenderer, tempSurface);
+	SDL_FreeSurface(tempSurface);
+	m_loadedPieceTextures.insert(std::make_pair(std::make_pair(i_type, i_color), texture));
 }
 
 void Renderer::DrawTable()
@@ -84,7 +96,6 @@ void Renderer::DrawTable()
 	newRect.x = 0;
 	newRect.y = 0;
 	SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["Chess_Stone"], NULL, &newRect);
-	//SDL_RenderPresent(m_sdlRenderer);
 }
 
 void Renderer::PreRendering()
@@ -93,7 +104,7 @@ void Renderer::PreRendering()
 	SDL_RenderClear(m_sdlRenderer);
 }
 
-void Renderer::DrawCell(PieceType i_cellType, Color i_color, int i_pixelX, int i_pixelY)
+void Renderer::DrawPiece(PieceType i_cellType, Color i_color, int i_pixelX, int i_pixelY)
 {
 	SDL_Rect newRect;
 	newRect.w = CELL_SIZE;
@@ -101,67 +112,7 @@ void Renderer::DrawCell(PieceType i_cellType, Color i_color, int i_pixelX, int i
 	newRect.x = i_pixelX + LEFT_EDGE;
 	newRect.y = i_pixelY + TOP_EDGE;
 
-	if (i_cellType == PieceType::KING)
-	{
-		if ( i_color == Color::BLACK)
-		{
-			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["KingB"], NULL, &newRect);
-		}
-		else {
-			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["KingW"], NULL, &newRect);
-		}
-	} 
-	else if (i_cellType == PieceType::QUEEN)
-	{
-		if (i_color == Color::BLACK)
-		{
-			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["QueenB"], NULL, &newRect);
-		}
-		else {
-			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["QueenW"], NULL, &newRect);
-		}
-
-		}
-	else if (i_cellType == PieceType::BISHOP)
-	{
-		if (i_color == Color::BLACK)
-		{
-			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["BishopB"], NULL, &newRect);
-		}
-		else {
-			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["BishopW"], NULL, &newRect);
-		}
-	}
-	else if (i_cellType == PieceType::KNIGHT)
-	{
-		if (i_color == Color::BLACK)
-		{
-			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["KnightB"], NULL, &newRect);
-		}
-		else {
-			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["KnightW"], NULL, &newRect);
-		}
-	}
-	else if (i_cellType == PieceType::CASTLE)
-	{
-		if (i_color == Color::BLACK)
-		{
-			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["CastleB"], NULL, &newRect);
-		}
-		else {
-			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["CastleW"], NULL, &newRect);
-		}
-	}
-	else if (i_cellType == PieceType::PAWN)
-	{
-		if (i_color == Color::BLACK)
-		{
-			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["PawnB"], NULL, &newRect);
-		}
-		else {
-			SDL_RenderCopy(m_sdlRenderer, m_loadedTextures["PawnW"], NULL, &newRect);
-		}
-	}
+	SDL_RenderCopy(m_sdlRenderer, m_loadedPieceTextures[std::make_pair(i_cellType, i_color)], NULL, &newRect);
 }
 
 void Renderer::DrawSelectionPromotionPawn(int i_DrawX, int i_DrawY, Color i_color)
@@ -170,19 +121,19 @@ void Renderer::DrawSelectionPromotionPawn(int i_DrawX, int i_DrawY, Color i_colo
 	{
 		if (i == 0)
 		{
-			DrawCell(PieceType::QUEEN, i_color, i_DrawX - LEFT_EDGE, i_DrawY - LEFT_EDGE);			
+			DrawPiece(PieceType::QUEEN, i_color, i_DrawX - LEFT_EDGE, i_DrawY - LEFT_EDGE);			
 		}
 		else if (i == 1)
 		{
-			DrawCell(PieceType::KNIGHT, i_color, i_DrawX - LEFT_EDGE, i_DrawY - LEFT_EDGE + CELL_SIZE);
+			DrawPiece(PieceType::KNIGHT, i_color, i_DrawX - LEFT_EDGE, i_DrawY - LEFT_EDGE + CELL_SIZE);
 		}
 		else if (i == 2)
 		{
-			DrawCell(PieceType::CASTLE, i_color, i_DrawX - LEFT_EDGE, i_DrawY - LEFT_EDGE + (2 * CELL_SIZE) );
+			DrawPiece(PieceType::CASTLE, i_color, i_DrawX - LEFT_EDGE, i_DrawY - LEFT_EDGE + (2 * CELL_SIZE) );
 		}
 		else if (i == 3)
 		{
-			DrawCell(PieceType::BISHOP, i_color, i_DrawX - LEFT_EDGE, i_DrawY - LEFT_EDGE + (3 * CELL_SIZE));
+			DrawPiece(PieceType::BISHOP, i_color, i_DrawX - LEFT_EDGE, i_DrawY - LEFT_EDGE + (3 * CELL_SIZE));
 		}
 	}
 }

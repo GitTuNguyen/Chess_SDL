@@ -9,7 +9,7 @@
 class Renderer {
 public:
 	Renderer();
-	void DrawCell(PieceType i_cellType, Color i_color, int i_pixelX, int i_pixelY);
+	void DrawPiece(PieceType i_cellType, Color i_color, int i_pixelX, int i_pixelY);
 	void DrawBoadData();
 	void DrawTable();
 	void DrawSelectionPromotionPawn(int i_DrawX, int i_DrawY, Color i_color);
@@ -20,9 +20,11 @@ public:
 	void PostFrame();
 	void CleanUp();
 	void LoadTexture(std::string i_imageName);
+	void LoadPieceTexture(std::string i_imageName, PieceType i_type, Color i_color);
 	void PreRendering();
 private:
 	SDL_Window* m_window = NULL;
 	SDL_Renderer* m_sdlRenderer = NULL;
 	std::map<std::string, SDL_Texture*> m_loadedTextures;
+	std::map<std::pair<PieceType, Color>, SDL_Texture*> m_loadedPieceTextures;
 };

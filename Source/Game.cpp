@@ -19,10 +19,43 @@ void Game::CreateNewGame()
 
 void Game::LoadPicture()
 {
-	std::vector<std::string> gameTextures = { "KingB", "KingW", "QueenB", "QueenW", "BishopB", "BishopW", "KnightB", "KnightW", "CastleB", "CastleW", "PawnB", "PawnW", "B_win", "W_win", "Chess_Stone", "YES", "NO"};
+	std::vector<std::string> gameTextures = { "B_win", "W_win", "Chess_Stone", "YES", "NO"};
 	for (int i = 0; i < gameTextures.size(); i++)
 	{
 		m_renderer->LoadTexture(gameTextures[i]);
+	}
+	std::vector<std::string> pieceTextures = { "KingB", "KingW", "QueenB", "QueenW", "BishopB", "BishopW", "KnightB", "KnightW", "CastleB", "CastleW", "PawnB", "PawnW" };
+	for (int i = 0; i < pieceTextures.size(); i++)
+	{
+		PieceType pieceType = PieceType::NONE;
+		std::string name = pieceTextures[i].substr(0, pieceTextures[i].size() - 1);
+		if (name == "King")
+		{
+			pieceType = PieceType::KING;
+		}
+		else if (name == "Queen")
+		{
+			pieceType = PieceType::QUEEN;
+		}
+		else if (name == "Castle")
+		{
+			pieceType = PieceType::CASTLE;
+		}
+		else if (name == "Knight")
+		{
+			pieceType = PieceType::KNIGHT;
+		}
+		else if (name == "Bishop")
+		{
+			pieceType = PieceType::BISHOP;
+		}
+		else if (name == "Pawn")
+		{
+			pieceType = PieceType::PAWN;
+		}
+		char colorCode = pieceTextures[i].at(pieceTextures[i].size() - 1);
+		Color pieceColor = colorCode == 'B' ? Color::BLACK : Color::WHITE;
+		m_renderer->LoadPieceTexture(pieceTextures[i], pieceType, pieceColor);
 	}
 }
 
@@ -38,7 +71,7 @@ void Game::DrawBoard()
 				continue;
 			} else
 			{
-				m_renderer->DrawCell(boardData[i][j]->GetName(), boardData[i][j]->GetColor(), j * CELL_SIZE, i * CELL_SIZE);
+				m_renderer->DrawPiece(boardData[i][j]->GetName(), boardData[i][j]->GetColor(), j * CELL_SIZE, i * CELL_SIZE);
 			}
 		}
 	}
