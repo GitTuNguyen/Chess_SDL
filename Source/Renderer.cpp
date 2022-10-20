@@ -40,8 +40,6 @@ Renderer::Renderer()
 	//Render in center of window
 	SDL_RenderSetLogicalSize(m_sdlRenderer, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-	LoadTexture("Chess_Stone");
-
 	if (TTF_Init() < 0)
 	{
 		SDL_Log("%s", TTF_GetError());
@@ -130,7 +128,7 @@ void Renderer::DrawPiece(PieceType i_cellType, Color i_color, int i_pixelX, int 
 	SDL_RenderCopy(m_sdlRenderer, m_loadedPieceTextures[std::make_pair(i_cellType, i_color)], NULL, &newRect);
 }
 
-void Renderer::DrawSelectionPromotionPawn(int i_DrawX, int i_DrawY, Color i_color)
+void Renderer::DrawPromotionOption(int i_DrawX, int i_DrawY, Color i_color)
 {
 	for (int i = 0; i < 4; i++)
 	{
@@ -179,7 +177,7 @@ void Renderer::DrawPromotionPawn(Coordinate i_pawnPromotionCoordiante)
 	SDL_SetRenderDrawColor(m_sdlRenderer, 255, 255, 255, 255);
 	SDL_RenderFillRect(m_sdlRenderer, &newRect);
 
-	DrawSelectionPromotionPawn(newRect.x, newRect.y, tempColor);
+	DrawPromotionOption(newRect.x, newRect.y, tempColor);
 }
 
 void Renderer::DrawAvailableMove(Coordinate i_selectedPieceCoordinate, std::vector<Coordinate> i_availableMove)
@@ -216,12 +214,12 @@ void Renderer::DrawText(std::string i_text, int i_size, int i_X, int i_Y, int i_
 	const char* renderText = i_text.c_str();
 	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, renderText, White);
 	SDL_Texture* message = SDL_CreateTextureFromSurface(m_sdlRenderer, surfaceMessage);
-	SDL_Rect Message_rect;
-	Message_rect.x = i_X;
-	Message_rect.y = i_Y;
-	Message_rect.w = i_W;
-	Message_rect.h = i_H;
-	SDL_RenderCopy(m_sdlRenderer, message, NULL, &Message_rect);
+	SDL_Rect messageRect;
+	messageRect.x = i_X;
+	messageRect.y = i_Y;
+	messageRect.w = i_W;
+	messageRect.h = i_H;
+	SDL_RenderCopy(m_sdlRenderer, message, NULL, &messageRect);
 	SDL_FreeSurface(surfaceMessage);
 	SDL_DestroyTexture(message);
 }
