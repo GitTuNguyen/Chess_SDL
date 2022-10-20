@@ -53,6 +53,21 @@ Renderer::Renderer()
 
 void Renderer::CleanUp()
 {
+	for (auto iter : m_loadedTextures)
+	{
+		SDL_DestroyTexture(iter.second);
+	}
+
+	for (auto iter : m_loadedPieceTextures)
+	{
+		SDL_DestroyTexture(iter.second);
+	}
+
+	for (auto iter : m_loadedFonts)
+	{
+		TTF_CloseFont(iter.second);
+	}
+
 	SDL_DestroyRenderer(m_sdlRenderer);	//cleans up all initialized subsystems
 
 	SDL_DestroyWindow(m_window);	//Destroy window
