@@ -2,7 +2,7 @@
 
 ### Introduction
 
-A practical simple C++ project to play CHESS using SDL.
+A C++ project to play CHESS using SDL.
 
 ### How to build:
 
